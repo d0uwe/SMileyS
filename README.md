@@ -4,6 +4,10 @@
 Many people have unlimited SMS included in their cellular plan nowadays, but it usually remains unused. This is due to the fact that people often want to chat with multiple people, which is impossible using SMS (One can not see if other people received the same SMS). By creating an app which uses headers in an SMS this is possible. SMS also uses less battery than always having mobile data turned on, and can be convienent when you're at a festival for example.
 
 ## Design
+The design of the app will be like any generic chat app, such as for example Whatsapp. 
+There is a main screen in which all conversations are shown, ranked based on te date of the last received message, and clicking on them will show the entire conversation and give the possibility of sending a message. 
+
+Besides that there will be a hamburger button which provides acces to the settings or creating a new (group)chat.
 
 #### Main features (minimum viable problem)
 * Chat with individuals 
