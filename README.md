@@ -13,6 +13,7 @@ Many people have unlimited SMS included in their cellular plan nowadays, but it 
 #### Optional features
 * Send images over SMS
 * Be able to create or import a backup
+* Make a webinterface if the phone is connected to the internet
 
 ## External libraries
 * Save messages in SQLite
