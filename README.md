@@ -17,7 +17,16 @@ When a new groupchat is made, an identifier for this chat is distributed amongst
 
 All the SMS messages in a groupchat will contain a header with the identifier, so the app can place the message in the right conversation.
 
-Sending images over SMS will be done by first simplyfining the colorspace of the image and resizing it to a smaller size. Then the image will be converted to a string and chopped up in pieces that fit in an SMS. 
+In the database a new entry will be made for this conversation, containing:
+* groupmembers
+* messages
+* groupname
+* optional: group-image
+
+Sending images over SMS will be done by first simplyfing the colorspace of the image and resizing it to a smaller size. Then the image will be converted to a string and chopped up in pieces that fit in an SMS. 
+
+## Visual sketch
+![visual sketch](https://github.com/d0uwe/SMileyS/blob/master/docs/sketch.JPG?raw=true)
 
 #### Main features (minimum viable problem)
 * Chat with individuals 
@@ -32,8 +41,7 @@ Sending images over SMS will be done by first simplyfining the colorspace of the
 ## External libraries
 * Save messages in SQLite
 * SMS manager and reading contacts
-* Own protocol for the headers in the SMS
-* Own compression method for sending images over SMS
+* Own protocol for the headers in the SMS and sending images over SMS
 
 ## Similar apps
 * GroupMe (https://groupme.com/en-US/sms) is an app which allows group SMS chats by sending an SMS to their central phone numbers, which then distributes the message to other people. Sadly this service only works in the US.
