@@ -9,6 +9,12 @@ There is a main screen in which all conversations are shown, ranked based on te 
 
 Besides that there will be a hamburger button which provides acces to the settings or creating a new (group)chat.
 
+When a new groupchat is made, an identifier for this chat is distributed amongst all members of the new group, which consists of the creators phone number + the amount of groupchats this person has made so far. This will be followed by all members of the group, and any changes, such as adding a person, will be distributed aswell. 
+
+All the SMS messages in a groupchat will contain a header with the identifier, so the app can place the message in the right conversation.
+
+Sending images over SMS will be done by first simplyfining the colorspace of the image and resizing it to a smaller size. Then the image will be converted to a string and chopped up in pieces that fit in an SMS. 
+
 #### Main features (minimum viable problem)
 * Chat with individuals 
 * Create a groupchat
