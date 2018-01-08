@@ -1,4 +1,8 @@
 # SMileyS
+An app which enables groupchatting over SMS by placing headers in the SMS messages. This allows group-chatting when internet is not available or when battery life is important (internet can be turned off.)
+
+by Douwe van der Wal
+
 
 ## Problem statement
 Many people have unlimited SMS included in their cellular plan nowadays, but it usually remains unused. This is due to the fact that people often want to chat with multiple people, which is impossible using SMS (One can not see if other people received the same SMS). By creating an app which uses headers in an SMS this is possible. SMS also uses less battery than always having mobile data turned on, and can be convienent when you're at a festival for example.
