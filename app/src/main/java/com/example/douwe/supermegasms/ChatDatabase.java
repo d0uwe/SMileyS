@@ -78,6 +78,12 @@ public class ChatDatabase extends SQLiteOpenHelper {
         return allConvs;
     }
 
+    public Cursor selectOneConversations(String phoneNumber){
+        SQLiteDatabase db =  this.getWritableDatabase();
+        Cursor allConvs = db.rawQuery("SELECT * FROM messages WHERE phoneNumber = ?", new String[]{phoneNumber});;
+        return allConvs;
+    }
+
 
     public void clear(Context context) {
         SQLiteDatabase db =  this.getWritableDatabase();
