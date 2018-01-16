@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.douwe.supermegasms.ConversationActivity">
-
+    android:windowSoftInputMode="adjustPan">
+tools:context="com.example.douwe.supermegasms.ConversationActivity">
     <ListView
         android:id="@+id/messageView"
         android:layout_width="368dp"
         android:layout_height="444dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/newMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,14 +23,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="new message"
+        android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.047"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:layout_constraintTop_toBottomOf="@+id/messageView" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/sendButton"

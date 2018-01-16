@@ -5,15 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
- * Created by douwe on 1/10/18.
+ * Created by Douwe on 1/10/18.
  */
 
 public class SmsReceiver extends BroadcastReceiver {
 
+    /**
+     * Put every SMS received in the database. Then send out a broadcast to force refreshes.
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle intentExtras = intent.getExtras();
@@ -49,9 +54,19 @@ public class SmsReceiver extends BroadcastReceiver {
                         System.out.println(all_messages.getString(all_messages.getColumnIndex("id")));
                     } while (all_messages.moveToNext());
                 }
-
-                System.out.println(db.selectAll().toString());
+                sendMessage(context);
             }
         }
+    }
+
+    /**
+     * Sends a broadcast out when a message is received to refresh listviews with messages
+     * @param context current context.
+     */
+    private void sendMessage(Context context) {
+        Intent intent = new Intent("message received");
+        // You can also include some extra data.
+        intent.putExtra("message", "This is my message!");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }

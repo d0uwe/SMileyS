@@ -42,8 +42,10 @@ public class MainActivity extends AppCompatActivity {
         convView.setOnItemClickListener(new HandleContactClick());
     }
 
-//Sends an SMS message to another device
-
+    /**
+     * Get all contacts we have a conversation with and put them in a list.
+     * @param convView
+     */
     private void setContactListview(ListView convView) {
         ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
         Cursor all_convs = db.selectAllConversations();
@@ -59,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         convView.setAdapter(list);
     }
 
+    /**
+     * Send an SMS.
+     * @param phoneNumber number of recipient
+     * @param message message to be send
+     */
     public void sendSMS(String phoneNumber, String message) {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
