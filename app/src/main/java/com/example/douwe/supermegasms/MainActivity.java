@@ -1,13 +1,7 @@
 package com.example.douwe.supermegasms;
 
 import android.app.Activity;
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Room;
-import android.content.BroadcastReceiver;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -16,15 +10,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
-    private AppDatabase appDatabase;
+    ArrayList<String> conversations;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,28 +35,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.contact_select).setOnClickListener(new HandleClick());
+        findViewById(R.id.contact_select).setOnClickListener(new HandlePickContactClick());
 
-        appDatabase = AppDatabase.getDatabase(this.getApplication());
-
-
+        ListView convView = findViewById(R.id.contactView);
+        setContactListview(convView);
+        convView.setOnItemClickListener(new HandleContactClick());
     }
 
 //Sends an SMS message to another device
+
+    private void setContactListview(ListView convView) {
+        ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
+        Cursor all_convs = db.selectAllConversations();
+        conversations = new ArrayList<>();
+        if(all_convs.moveToFirst()){
+            do{
+                String id = all_convs.getString(all_convs.getColumnIndex("id"));
+                System.out.println(id);
+                conversations.add(id);
+            } while (all_convs.moveToNext());
+        }
+        ArrayAdapter<String> list = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, conversations);
+        convView.setAdapter(list);
+    }
 
     private void sendSMS(String phoneNumber, String message) {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
     }
-    private void pickContact(View v) {
-        Intent i=
-                new Intent(Intent.ACTION_PICK,
-                        ContactsContract.Contacts.CONTENT_URI);
 
-        startActivityForResult(i, 1337);
-    }
 
-    private class HandleClick implements View.OnClickListener {
+    private class HandlePickContactClick implements View.OnClickListener {
         public void onClick(View view) {
             Intent i=
                     new Intent(Intent.ACTION_PICK,
@@ -70,6 +76,18 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    private class HandleContactClick implements AdapterView.OnItemClickListener {
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
+            ListView convView = findViewById(R.id.contactView);
+            intent.putExtra("phoneNumber", convView.getItemAtPosition(i).toString());
+            startActivity(intent);
+        }
+    }
+
+
+
 
     //code
     @Override
@@ -108,30 +126,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 break;
-        }
-    }
-
-    @Entity(tableName = "users")
-    public class User {
-
-        @PrimaryKey
-        @ColumnInfo(name = "userid")
-        private String mId;
-
-        @ColumnInfo(name = "username")
-        private String mUserName;
-
-
-
-        @Ignore
-        public User(String userName) {
-            mId = UUID.randomUUID().toString();
-            mUserName = userName;
-        }
-
-        public User(String id, String userName, Date date) {
-            this.mId = id;
-            this.mUserName = userName;
         }
     }
 }
