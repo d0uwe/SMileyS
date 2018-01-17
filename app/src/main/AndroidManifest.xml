@@ -29,7 +29,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ConversationActivity"></activity>
+        <activity android:name=".ConversationActivity" />
+        <activity android:name=".SelectContactsActivity"></activity>
     </application>
 
 </manifest>

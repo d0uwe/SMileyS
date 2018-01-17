@@ -10,6 +10,8 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import static android.telephony.PhoneNumberUtils.formatNumberToE164;
+
 /**
  * Created by Douwe on 1/10/18.
  */
@@ -36,11 +38,11 @@ public class SmsReceiver extends BroadcastReceiver {
 
                 Toast.makeText(context, phone + ": " + message, Toast.LENGTH_SHORT).show();
                 ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
-                db.insert(phone, message);
-                db.insert("335566", "hallooo");
-                db.insert("4316134", "hallooo");
+                db.insert(formatNumberToE164(phone, "NL"), message, true);
+                db.insert("335566", "hallooo", true);
+                db.insert("4316134", "hallooo", true);
 
-                db.insert("12341641", "hallooo");
+                db.insert("12341641", "hallooo", true);
 
                 Cursor all_messages = db.selectAll();
                 if(all_messages.moveToFirst()){
@@ -65,8 +67,6 @@ public class SmsReceiver extends BroadcastReceiver {
      */
     private void sendMessage(Context context) {
         Intent intent = new Intent("message received");
-        // You can also include some extra data.
-        intent.putExtra("message", "This is my message!");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }

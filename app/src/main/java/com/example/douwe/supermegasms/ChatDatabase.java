@@ -21,7 +21,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table messages (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT, message TEXT)");
+        db.execSQL("create table messages (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT, message TEXT, inOut BOOL)");
         db.execSQL("create table conversations (_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT)");
 
     }
@@ -41,10 +41,11 @@ public class ChatDatabase extends SQLiteOpenHelper {
         return instance;
     }
 
-    public void insert(String phoneNumber, String message){
+    public void insert(String phoneNumber, String message, boolean incoming){
         ContentValues values = new ContentValues();
         values.put("phoneNumber", phoneNumber);
         values.put("message", message);
+        values.put("inOut", incoming);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert("messages", null, values);
 

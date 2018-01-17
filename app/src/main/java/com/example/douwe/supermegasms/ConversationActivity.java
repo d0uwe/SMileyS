@@ -39,13 +39,11 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     /**
-     * receives a broadcast when an sms is received. Forces the listview to update.
+     * Receives a broadcast when an sms is received. Forces the listview to update.
      */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String message = intent.getStringExtra("message");
             if (phoneNumber != null){
                 setMessages(phoneNumber);
             }
@@ -54,7 +52,7 @@ public class ConversationActivity extends AppCompatActivity {
 
     /**
      * Get messages send to and from this number and set them in a listview.
-     * @param phoneNumber
+     * @param phoneNumber phoneNumber to show conversation with
      */
     private void setMessages(String phoneNumber) {
         ArrayList<String> messages = new ArrayList<>();
@@ -103,5 +101,7 @@ public class ConversationActivity extends AppCompatActivity {
     public void sendSMS(String phoneNumber, String message) {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
+        ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
+        db.insert(phoneNumber, message, false);
     }
 }
