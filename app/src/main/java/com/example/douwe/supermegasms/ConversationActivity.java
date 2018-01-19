@@ -55,25 +55,26 @@ public class ConversationActivity extends AppCompatActivity {
      * @param phoneNumber phoneNumber to show conversation with
      */
     private void setMessages(String phoneNumber) {
-        ArrayList<String> messages = new ArrayList<>();
         // get all messages send by this phonenumber
         ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
         Cursor allMessages = db.selectOneConversations(phoneNumber);
 
+        ChatArrayAdapter chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(), R.layout.right);
+
         // extract all resulting messages
         if(allMessages.moveToFirst()){
             do{
-                messages.add(allMessages.getString(allMessages.getColumnIndex("message")));
+                String message = allMessages.getString(allMessages.getColumnIndex("message"));
+                boolean in = allMessages.getInt(allMessages.getColumnIndex("inOut")) == 0;
                 System.out.println(allMessages.getString(allMessages.getColumnIndex("message")));
+                chatArrayAdapter.add(new ChatMessage(in, message));
             } while (allMessages.moveToNext());
         }
-        // convert arraylist to arrayadapter and set it
-        ArrayAdapter<String> messageAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, messages);
         ListView messageView = findViewById(R.id.messageView);
-        messageView.setAdapter(messageAdapter);
+        messageView.setAdapter(chatArrayAdapter);
 
         // scroll to the bottom of the list
-        messageView.setSelection(messageAdapter.getCount() - 1);
+        messageView.setSelection(chatArrayAdapter.getCount() - 1);
     }
 
     /**
@@ -84,6 +85,8 @@ public class ConversationActivity extends AppCompatActivity {
             // get typed text and send it to recipients
             EditText newMessageBox = findViewById(R.id.newMessage);
             String newMessage = newMessageBox.getText().toString();
+            // reset edittext, since the message has been send.
+            newMessageBox.setText("");
 
             // not allowed to send an empty SMS.
             if (!newMessage.equals("")){
