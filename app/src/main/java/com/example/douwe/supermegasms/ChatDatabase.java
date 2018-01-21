@@ -1,7 +1,7 @@
 package com.example.douwe.supermegasms;
 
 /**
- * Created by douwe on 1/16/18.
+ * Created by Douwe on 1/16/18.
  */
 
 import android.content.Context;

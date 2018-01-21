@@ -1,17 +1,15 @@
 package com.example.douwe.supermegasms;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-
+// borrowed from: https://trinitytuts.com/simple-chat-application-using-listview-in-android/
 class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
 
     private TextView chatText;
@@ -46,7 +44,7 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         }else{
             row = inflater.inflate(R.layout.left, parent, false);
         }
-        chatText = (TextView) row.findViewById(R.id.msgr);
+        chatText = (TextView) row.findViewById(R.id.number);
         chatText.setText(chatMessageObj.message);
         return row;
     }

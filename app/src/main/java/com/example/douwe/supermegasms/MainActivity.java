@@ -3,6 +3,7 @@ package com.example.douwe.supermegasms;
 import android.app.Activity;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -23,11 +24,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
-    ArrayList<String> conversations;
+    ContactArrayAdapter contactArrayAdapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         // register to broadcasts to refresh listview when there is a new message
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("message received"));
+
     }
 
     /**
@@ -71,16 +74,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuSortNewest:
-                    System.out.println("first");
-                Intent i=
-                        new Intent(Intent.ACTION_PICK,
-                                ContactsContract.Contacts.CONTENT_URI);
+                Intent i= new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
 
                 startActivityForResult(i, 2000);
 
                 break;
             case R.id.menuSortRating:
-                System.out.println("secondo");
                 Intent intent = new Intent(MainActivity.this, SelectContactsActivity.class);
                 startActivity(intent);
                 break;
@@ -90,21 +89,36 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Get all contacts we have a conversation with and put them in a list.
-     * @param convView
+     * @param convView the listview in which the adapter should be set.
      */
     private void setContactListview(ListView convView) {
         ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
         Cursor all_convs = db.selectAllConversations();
-        conversations = new ArrayList<>();
+        contactArrayAdapter = new ContactArrayAdapter(getApplicationContext(), R.layout.contact_row);
+
         if(all_convs.moveToFirst()){
             do{
                 String id = all_convs.getString(all_convs.getColumnIndex("id"));
+                String lastMessage = getLastMessage(id, db);
                 System.out.println(id);
-                conversations.add(id);
+                contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", getContactName(getApplicationContext(), id)));
+
             } while (all_convs.moveToNext());
         }
-        ArrayAdapter<String> list = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, conversations);
-        convView.setAdapter(list);
+        all_convs.close();
+        convView.setAdapter(contactArrayAdapter);
+    }
+
+    /**
+     * Get the latest message in a conversation
+     * @param id phoneNumber of which we would like to ge the message
+     * @param db ChatDataBase containing the messages
+     * @return the last message in this conversation.
+     */
+    private String getLastMessage(String id, ChatDatabase db){
+        Cursor allMessages = db.selectOneConversations(id);
+        allMessages.moveToLast();
+        return allMessages.getString(allMessages.getColumnIndex("message"));
     }
 
     /**
@@ -132,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
             ListView convView = findViewById(R.id.contactView);
-            intent.putExtra("phoneNumber", convView.getItemAtPosition(i).toString());
+            ContactRow clickedRow = (ContactRow)convView.getItemAtPosition(i);
+            intent.putExtra("phoneNumber", clickedRow.number);
             startActivity(intent);
         }
     }
@@ -208,5 +223,24 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
         }
+    }
+
+    public static String getContactName(Context context, String phoneNumber) {
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        String contactName = null;
+        if(cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        }
+
+        if(cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return contactName;
     }
 }

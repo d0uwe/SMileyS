@@ -36,7 +36,6 @@ public class SmsReceiver extends BroadcastReceiver {
                 String phone = smsMessage.getOriginatingAddress();
                 String message = smsMessage.getMessageBody().toString();
 
-                Toast.makeText(context, phone + ": " + message, Toast.LENGTH_SHORT).show();
                 ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
                 db.insert(formatNumberToE164(phone, "NL"), message, true);
                 db.insert("335566", "hallooo", true);

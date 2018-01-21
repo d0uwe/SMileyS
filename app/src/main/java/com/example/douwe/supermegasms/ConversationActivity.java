@@ -70,6 +70,7 @@ public class ConversationActivity extends AppCompatActivity {
                 chatArrayAdapter.add(new ChatMessage(in, message));
             } while (allMessages.moveToNext());
         }
+        allMessages.close();
         ListView messageView = findViewById(R.id.messageView);
         messageView.setAdapter(chatArrayAdapter);
 
@@ -92,7 +93,6 @@ public class ConversationActivity extends AppCompatActivity {
             if (!newMessage.equals("")){
                 sendSMS(phoneNumber, newMessage);
             }
-
         }
     }
 
@@ -106,5 +106,7 @@ public class ConversationActivity extends AppCompatActivity {
         sms.sendTextMessage(phoneNumber, null, message, null, null);
         ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
         db.insert(phoneNumber, message, false);
+        // refresh listview with the new message
+        setMessages(phoneNumber);
     }
 }
