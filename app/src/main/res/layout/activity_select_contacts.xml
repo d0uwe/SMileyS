@@ -22,12 +22,12 @@
     <ListView
         android:id="@+id/groupListView"
         android:layout_width="368dp"
-        android:layout_height="439dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/anotherContact"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/groupName" />
 
     <Button
         android:id="@+id/finish"
@@ -36,8 +36,22 @@
         android:text="Done"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/anotherContact"
-        app:layout_constraintTop_toBottomOf="@+id/groupListView" />
+        app:layout_constraintTop_toBottomOf="@+id/groupListView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/groupName"
+        android:layout_width="373dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="groupname"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -22,14 +22,17 @@ public class ChatDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table messages (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT, message TEXT, inOut BOOL)");
-        db.execSQL("create table conversations (_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT)");
-
+        db.execSQL("create table conversations (_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT, groupBool BOOL)");
+        db.execSQL("create table groupNames (_id INTEGER PRIMARY KEY AUTOINCREMENT, myID INT, groupName TEXT)");
+        db.execSQL("create table groups (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT, groupID INT, myID INT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + "messages");
         db.execSQL("DROP TABLE IF EXISTS " + "conversations");
+        db.execSQL("DROP TABLE IF EXISTS " + "groupNames");
+        db.execSQL("DROP TABLE IF EXISTS " + "groups");
 
         onCreate(db);
     }
@@ -85,6 +88,24 @@ public class ChatDatabase extends SQLiteOpenHelper {
         return allConvs;
     }
 
+    public int getNewGroup(){
+        SQLiteDatabase db =  this.getWritableDatabase();
+        Cursor allGroups = db.rawQuery("SELECT * FROM groupNames", null);
+        int groupID = 0;
+        if(allGroups.moveToLast()) {
+            groupID = allGroups.getInt(allGroups.getColumnIndex("myID")) + 1;
+        }
+        insertGroup(groupID, "hallo");
+        return groupID;
+    }
+
+    public void insertGroup(int myID, String groupName){
+        ContentValues values = new ContentValues();
+        values.put("myID", myID);
+        values.put("groupName", groupName);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert("groupNames", null, values);
+    }
 
     public void clear(Context context) {
         SQLiteDatabase db =  this.getWritableDatabase();

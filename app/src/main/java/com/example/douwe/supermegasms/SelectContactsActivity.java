@@ -7,10 +7,14 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -28,6 +32,10 @@ public class SelectContactsActivity extends AppCompatActivity {
         // pick first contact
         Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(i, 1337);
+
+        // create the group
+        Button doneButton = findViewById(R.id.finish);
+        doneButton.setOnClickListener(new HandleFinishClick());
     }
 
 
@@ -76,4 +84,25 @@ public class SelectContactsActivity extends AppCompatActivity {
         }
     }
 
+    private class HandleFinishClick implements View.OnClickListener {
+        public void onClick(View view) {
+            ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
+            EditText groupNameEditText = findViewById(R.id.groupName);
+            String groupname = groupNameEditText.getText().toString();
+            if (groupname.equals("")){
+                Toast toast = Toast.makeText(getApplicationContext(), "Enter a groupname", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }
+            int groupID = db.getNewGroup();
+            for(int i = 0; i < groupContacts.size(); i++) {
+                sendSMS(groupContacts.get(i), "invite to" + Integer.toString(groupID));
+            }
+        }
+    }
+
+    public void sendSMS(String phoneNumber, String message) {
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
+    }
 }

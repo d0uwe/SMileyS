@@ -11,3 +11,6 @@ Vandaag heb ik mijn tweede telefoon klaar gemaakt, met api level 16, dus dat was
  Vandaag heb ik ook  wat kleine stijlaanpassingen gedaan en een groot begin gemaakt aan een custom layouts voor de listview. Dit zorgt ervoor dat berichtjes mooi rechts en links komen zoals bij een normale chatapp. 
 # 19 januari
 Custom row layouts voor de listviews werken nu, geleend van (https://trinitytuts.com/simple-chat-application-using-listview-in-android/). Dit zal nog vaker gebruikt worden en aangepast worden, aangezien groepchats andere berichten vereisen. Vandaag heb ik ook een presentatie gehouden en het PROCESS.md bestand van google drive naar deze GitHub verplaatst. 
+
+# 21 januari
+Ook de listviews met alle conversaties hebben nu een custom row layout, met daarin de naam van het contact en het laatste ontvangen bericht. Alleen het tijdstip moet nog toegevoegd worden in de database. 

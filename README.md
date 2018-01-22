@@ -50,3 +50,5 @@ Sending images over SMS will be done by first simplyfing the colorspace of the i
 
 ## Hardest part
 Making a database which allows saving all the required information about a groupchat, such as who the group-admin is, which phone-numbers are in the group, and altering this in a way that it works properly when someone wants to leave the group.
+
+[![BCH compliance](https://bettercodehub.com/edge/badge/d0uwe/SMileyS?branch=master)](https://bettercodehub.com/)
