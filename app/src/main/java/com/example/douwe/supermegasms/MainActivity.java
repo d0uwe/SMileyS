@@ -34,14 +34,6 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button btnSendSMS = (Button) findViewById(R.id.btnsms);
-        btnSendSMS.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                sendSMS("+31640935823", "Hi You got a message!");
-            }
-        });
-
-        findViewById(R.id.contact_select).setOnClickListener(new HandlePickContactClick());
 
         ListView convView = findViewById(R.id.contactView);
         setContactListview(convView);
@@ -121,27 +113,6 @@ public class MainActivity extends AppCompatActivity {
         return allMessages.getString(allMessages.getColumnIndex("message"));
     }
 
-    /**
-     * Send an SMS.
-     * @param phoneNumber number of recipient
-     * @param message message to be send
-     */
-    public void sendSMS(String phoneNumber, String message) {
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, null, null);
-    }
-
-
-    private class HandlePickContactClick implements View.OnClickListener {
-        public void onClick(View view) {
-            Intent i=
-                    new Intent(Intent.ACTION_PICK,
-                            ContactsContract.Contacts.CONTENT_URI);
-
-            startActivityForResult(i, 1337);
-        }
-    }
-
     private class HandleContactClick implements AdapterView.OnItemClickListener {
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
@@ -152,46 +123,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-    //code
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
-
         switch (reqCode) {
-            case (1337):
-                if (resultCode == Activity.RESULT_OK) {
-
-                    Uri contactData = data.getData();
-                    Cursor c = managedQuery(contactData, null, null, null, null);
-                    if (c.moveToFirst()) {
-
-
-                        String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-
-                        String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-                        if (hasPhone.equalsIgnoreCase("1")) {
-                            Cursor phones = getContentResolver().query(
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id,
-                                    null, null);
-                            phones.moveToFirst();
-                            String cNumber = phones.getString(phones.getColumnIndex("data1"));
-                            System.out.println("number is:" + cNumber);
-                        }
-                        String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        System.out.println("name is:" + name);
-
-                        TextView textview = findViewById(R.id.textView);
-                        textview.setText(name);
-
-
-                    }
-                }
-                break;
             case 2000:
                 if (resultCode == Activity.RESULT_OK) {
                     Uri contactData = data.getData();
@@ -220,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 }
-
                 break;
         }
     }

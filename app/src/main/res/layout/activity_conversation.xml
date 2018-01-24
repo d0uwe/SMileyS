@@ -4,47 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:windowSoftInputMode="adjustPan">
-tools:context="com.example.douwe.supermegasms.ConversationActivity">
+    android:windowSoftInputMode="adjustResize"
+    tools:layout_editor_absoluteY="81dp"><![CDATA[
+    tools:context="com.example.douwe.supermegasms.ConversationActivity">
 
-    <ListView
-        android:id="@+id/messageView"
-        android:layout_width="368dp"
-        android:layout_height="454dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="4dp"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/newMessage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    ]]>
 
     <EditText
         android:id="@+id/newMessage"
         android:layout_width="306dp"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="1dp"
         android:ems="10"
         android:hint="new message"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messageView"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <ListView
+        android:id="@+id/messageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:paddingBottom="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/newMessage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/sendButton"
         android:layout_width="63dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:text="send"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/newMessage"
-        app:layout_constraintTop_toBottomOf="@+id/messageView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="@+id/newMessage"
+        tools:layout_editor_absoluteY="472dp" />
 </android.support.constraint.ConstraintLayout>

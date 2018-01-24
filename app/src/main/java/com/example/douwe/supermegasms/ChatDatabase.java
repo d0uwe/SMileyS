@@ -88,14 +88,14 @@ public class ChatDatabase extends SQLiteOpenHelper {
         return allConvs;
     }
 
-    public int getNewGroup(){
+    public int getNewGroup(String groupName){
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor allGroups = db.rawQuery("SELECT * FROM groupNames", null);
         int groupID = 0;
         if(allGroups.moveToLast()) {
             groupID = allGroups.getInt(allGroups.getColumnIndex("myID")) + 1;
         }
-        insertGroup(groupID, "hallo");
+        insertGroup(groupID, groupName);
         return groupID;
     }
 
@@ -105,6 +105,15 @@ public class ChatDatabase extends SQLiteOpenHelper {
         values.put("groupName", groupName);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert("groupNames", null, values);
+    }
+
+    public void insertNumberInGroup(int myID, String phoneNumber, int theirID){
+        ContentValues values = new ContentValues();
+        values.put("myID", myID);
+        values.put("phoneNumber", phoneNumber);
+        values.put("groupID", theirID);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert("groups", null, values);
     }
 
     public void clear(Context context) {

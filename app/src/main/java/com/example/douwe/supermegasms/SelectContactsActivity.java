@@ -88,16 +88,17 @@ public class SelectContactsActivity extends AppCompatActivity {
         public void onClick(View view) {
             ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
             EditText groupNameEditText = findViewById(R.id.groupName);
-            String groupname = groupNameEditText.getText().toString();
-            if (groupname.equals("")){
+            String groupName = groupNameEditText.getText().toString();
+            if (groupName.equals("")){
                 Toast toast = Toast.makeText(getApplicationContext(), "Enter a groupname", Toast.LENGTH_SHORT);
                 toast.show();
                 return;
             }
-            int groupID = db.getNewGroup();
+            int groupID = db.getNewGroup(groupName);
             for(int i = 0; i < groupContacts.size(); i++) {
-                sendSMS(groupContacts.get(i), "invite to" + Integer.toString(groupID));
+                sendSMS(groupContacts.get(i),  Integer.toString(groupID) + "]" + "INV]" + groupName);
             }
+            finish();
         }
     }
 

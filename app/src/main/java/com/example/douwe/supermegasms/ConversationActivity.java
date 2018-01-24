@@ -21,6 +21,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.telephony.PhoneNumberUtils.formatNumberToE164;
+
 public class ConversationActivity extends AppCompatActivity {
     String phoneNumber = null;
     @Override
@@ -105,7 +107,7 @@ public class ConversationActivity extends AppCompatActivity {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
         ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
-        db.insert(phoneNumber, message, false);
+        db.insert(formatNumberToE164(phoneNumber, "NL"), message, false);
         // refresh listview with the new message
         setMessages(phoneNumber);
     }
