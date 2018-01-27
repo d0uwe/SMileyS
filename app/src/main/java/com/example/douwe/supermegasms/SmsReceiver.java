@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
-import android.util.Log;
-import android.widget.Toast;
 
 import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 import static java.lang.Integer.parseInt;
@@ -70,15 +68,15 @@ public class SmsReceiver extends BroadcastReceiver {
                 db.insertNumberInGroup(parseInt(contents[0]), contents[2], parseInt(contents[3]));
             }
         } else if (contents.length == 2) {
-            db.insert(contents[0], contents[1], true);
-            sendMessage(context);
+            db.insertGroup(contents[0], phoneNumber, contents[1], true);
+            sendBroadcast(context);
         } else {
             System.out.println("inserting: " + message);
             // process as normal message.
 
             System.out.println("inserting with number: " + phoneNumber + "and message: " + message);
             db.insert(phoneNumber, message, true);
-            sendMessage(context);
+            sendBroadcast(context);
         }
     }
 
@@ -88,10 +86,14 @@ public class SmsReceiver extends BroadcastReceiver {
         Cursor groupMembers = db.getGroupMembers(myId);
         if(groupMembers.moveToFirst()){
             do{
+                // message to existing member
                 String memberPhoneNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                 String memberID = groupMembers.getString(groupMembers.getColumnIndex("groupID"));
                 String message = memberID + "]ADD]" + phoneNumber + "]" + theirID;
                 sendSMS(memberPhoneNumber, message);
+                // message to new member
+                message = theirID + "]ADD]" + memberPhoneNumber + "]" + memberID;
+                sendSMS(phoneNumber, message);
             } while (groupMembers.moveToNext());
         }
 
@@ -102,7 +104,7 @@ public class SmsReceiver extends BroadcastReceiver {
      * Sends a broadcast out when a message is received to refresh listviews with messages
      * @param context current context.
      */
-    private void sendMessage(Context context) {
+    private void sendBroadcast(Context context) {
         Intent intent = new Intent("message received");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }

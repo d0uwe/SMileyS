@@ -45,6 +45,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        ListView convView = findViewById(R.id.contactView);
+        setContactListview(convView);
+    }
+
     /**
      * Receives a broadcast when an sms is received. Forces the listview to update.
      */

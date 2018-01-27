@@ -7,10 +7,18 @@ package com.example.douwe.supermegasms;
 public class ChatMessage {
     public boolean left;
     public String message;
+    public String sender;
 
     public ChatMessage(boolean left, String message) {
         super();
         this.left = left;
         this.message = message;
+    }
+
+    public ChatMessage(boolean left, String message, String sender) {
+        super();
+        this.left = left;
+        this.message = message;
+        this.sender = sender;
     }
 }

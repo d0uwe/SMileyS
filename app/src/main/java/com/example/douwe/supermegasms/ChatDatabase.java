@@ -21,7 +21,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table messages (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT, message TEXT, inOut BOOL)");
+        db.execSQL("create table messages (_id INTEGER PRIMARY KEY AUTOINCREMENT, ID TEXT, sender TEXT, message TEXT, inOut BOOL)");
         db.execSQL("create table conversations (_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT, groupBool BOOL)");
         db.execSQL("create table groupNames (_id INTEGER PRIMARY KEY AUTOINCREMENT, myID INT, groupName TEXT)");
         db.execSQL("create table groups (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT, groupID INT, myID INT)");
@@ -46,7 +46,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     public void insert(String phoneNumber, String message, boolean incoming){
         ContentValues values = new ContentValues();
-        values.put("phoneNumber", phoneNumber);
+        values.put("ID", phoneNumber);
         values.put("message", message);
         values.put("inOut", incoming);
         SQLiteDatabase db = this.getWritableDatabase();
@@ -63,11 +63,34 @@ public class ChatDatabase extends SQLiteOpenHelper {
                 }
             } while (all_convs.moveToNext());
         }
-        // todo: fix for ugly fix. 
-        if (!found && phoneNumber.length() > 7) {
+        if (!found) {
             ContentValues values2 = new ContentValues();
             values2.put("id", phoneNumber);
             db.insert("conversations", null, values2);
+        }
+
+
+    }
+
+    public void insertGroup(String groupID, String phoneNumber, String message, boolean incoming){
+        ContentValues values = new ContentValues();
+        values.put("ID", groupID);
+        values.put("sender", phoneNumber);
+        values.put("message", message);
+        values.put("inOut", incoming);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert("messages", null, values);
+
+        Cursor all_convs = selectAllConversations();
+        boolean found = false;
+        if(all_convs.moveToFirst()){
+            do{
+                String id = all_convs.getString(all_convs.getColumnIndex("id"));
+                if (id.equals(phoneNumber)) {
+                    found = true;
+                    break;
+                }
+            } while (all_convs.moveToNext());
         }
     }
 
@@ -91,7 +114,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     public Cursor selectOneConversations(String phoneNumber){
         SQLiteDatabase db =  this.getWritableDatabase();
-        Cursor allConvs = db.rawQuery("SELECT * FROM messages WHERE phoneNumber = ?", new String[]{phoneNumber});;
+        Cursor allConvs = db.rawQuery("SELECT * FROM messages WHERE ID = ?", new String[]{phoneNumber});;
         return allConvs;
     }
 

@@ -60,22 +60,26 @@ public class ConversationActivity extends AppCompatActivity {
 
     /**
      * Get messages send to and from this number and set them in a listview.
-     * @param phoneNumber phoneNumber to show conversation with
+     * @param phoneNumber phone number to show conversation with
      */
     private void setMessages(String phoneNumber) {
-        // get all messages send by this phonenumber
+        // get all messages send by this phone number
         ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
         Cursor allMessages = db.selectOneConversations(phoneNumber);
 
         ChatArrayAdapter chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(), R.layout.right);
+        if (inGroup) {
+            chatArrayAdapter.setGroup(true);
+        }
 
         // extract all resulting messages
         if(allMessages.moveToFirst()){
             do{
                 String message = allMessages.getString(allMessages.getColumnIndex("message"));
+                String sender = allMessages.getString(allMessages.getColumnIndex("sender"));
                 boolean in = allMessages.getInt(allMessages.getColumnIndex("inOut")) == 0;
                 System.out.println(allMessages.getString(allMessages.getColumnIndex("message")));
-                chatArrayAdapter.add(new ChatMessage(in, message));
+                chatArrayAdapter.add(new ChatMessage(in, message, sender));
             } while (allMessages.moveToNext());
         }
         allMessages.close();
@@ -100,19 +104,21 @@ public class ConversationActivity extends AppCompatActivity {
             // reset edittext, since the message has been send.
             newMessageBox.setText("");
 
+            // not allowed to send an empty SMS.
+            if (newMessage.equals("")){
+                return;
+            }
             if(groupMembers.moveToFirst()){
                 do{
                     String memberPhoneNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                     String memberID = groupMembers.getString(groupMembers.getColumnIndex("groupID"));
                     String message = memberID + "]" + newMessage;
-                    sendSMS(memberPhoneNumber, message);
+                    sendSMSGroup(memberPhoneNumber, message);
                 } while (groupMembers.moveToNext());
             }
-            // not allowed to send an empty SMS.
-            if (!newMessage.equals("")){
-                System.out.println("inseeting with: " + phoneNumber);
-                sendSMSGroup(phoneNumber, newMessage);
-            }
+
+            db.insert(phoneNumber, newMessage, false);
+            setMessages(phoneNumber);
         }
     }
 
@@ -152,8 +158,7 @@ public class ConversationActivity extends AppCompatActivity {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
         ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
-        db.insert(phoneNumber, message, false);
+        System.out.println("inserting message with id:  " + phoneNumber);
         // refresh listview with the new message
-        setMessages(phoneNumber);
     }
 }
