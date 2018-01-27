@@ -14,3 +14,15 @@ Custom row layouts voor de listviews werken nu, geleend van (https://trinitytuts
 
 # 21 januari
 Ook de listviews met alle conversaties hebben nu een custom row layout, met daarin de naam van het contact en het laatste ontvangen bericht. Alleen het tijdstip moet nog toegevoegd worden in de database. 
+
+# 22 januari
+Vandaag heb ik de database aangepast voor het gebruik van groepen. Wanneer er een invite gestuurd moet worden, wordt er een nieuwe identifier aangemaakt voor dit gesprek. 
+
+# 23 januari
+Wegens ziekte is er vandaag niets productiefs gebeurd.
+
+# 24 januari
+Wanneer er een invite ontvangen wordt, wordt er een identifier gekozen en teruggestuurd. Wanneer zo'n antwoord op een invite wordt ontvangen wordt dit opgeslagen in de database. 
+
+# 25 januari
+Wegens griep is er nog steeds niet zo heel veel gebeurd, maar berichten kunnen nu worden verzonden binnen een groepchat en gaan naar alle deelnemers. Ook heb ik vandaag een presentatie gehouden. 

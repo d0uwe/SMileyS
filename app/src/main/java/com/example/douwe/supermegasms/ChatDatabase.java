@@ -63,7 +63,8 @@ public class ChatDatabase extends SQLiteOpenHelper {
                 }
             } while (all_convs.moveToNext());
         }
-        if (!found) {
+        // todo: fix for ugly fix. 
+        if (!found && phoneNumber.length() > 7) {
             ContentValues values2 = new ContentValues();
             values2.put("id", phoneNumber);
             db.insert("conversations", null, values2);
@@ -82,6 +83,12 @@ public class ChatDatabase extends SQLiteOpenHelper {
         return allConvs;
     }
 
+    public Cursor selectAllGroupConversations(){
+        SQLiteDatabase db =  this.getWritableDatabase();
+        Cursor allGroups = db.rawQuery("SELECT rowid _id,* FROM groupNames", null);
+        return allGroups;
+    }
+
     public Cursor selectOneConversations(String phoneNumber){
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor allConvs = db.rawQuery("SELECT * FROM messages WHERE phoneNumber = ?", new String[]{phoneNumber});;
@@ -97,6 +104,12 @@ public class ChatDatabase extends SQLiteOpenHelper {
         }
         insertGroup(groupID, groupName);
         return groupID;
+    }
+
+    public Cursor getGroupMembers(String myID){
+        SQLiteDatabase db =  this.getWritableDatabase();
+        Cursor allMembers = db.rawQuery("SELECT * FROM groups WHERE myID = ?", new String[]{myID});;
+        return allMembers;
     }
 
     public void insertGroup(int myID, String groupName){

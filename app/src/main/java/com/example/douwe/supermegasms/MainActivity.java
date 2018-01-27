@@ -85,19 +85,36 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setContactListview(ListView convView) {
         ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
-        Cursor all_convs = db.selectAllConversations();
+        Cursor allConvs = db.selectAllConversations();
         contactArrayAdapter = new ContactArrayAdapter(getApplicationContext(), R.layout.contact_row);
 
-        if(all_convs.moveToFirst()){
+        if(allConvs.moveToFirst()){
             do{
-                String id = all_convs.getString(all_convs.getColumnIndex("id"));
-                String lastMessage = getLastMessage(id, db);
-                System.out.println(id);
-                contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", getContactName(getApplicationContext(), id)));
+                String id = allConvs.getString(allConvs.getColumnIndex("id"));
+                System.out.println("this id: " + id);
 
-            } while (all_convs.moveToNext());
+                String lastMessage = getLastMessage(id, db);
+                contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", getContactName(getApplicationContext(), id), false));
+
+            } while (allConvs.moveToNext());
         }
-        all_convs.close();
+        allConvs.close();
+        System.out.println("im here?");
+
+        Cursor allGroups = db.selectAllGroupConversations();
+        if(allGroups.moveToFirst()){
+            do{
+                String id = allGroups.getString(allGroups.getColumnIndex("myID"));
+                String lastMessage = getLastMessage(id, db);
+
+                System.out.println("id iss: " + id);
+                contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", allGroups.getString(allGroups.getColumnIndex("groupName")), true));
+
+            } while (allGroups.moveToNext());
+        }
+        allGroups.close();
+
+
         convView.setAdapter(contactArrayAdapter);
     }
 
@@ -109,8 +126,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private String getLastMessage(String id, ChatDatabase db){
         Cursor allMessages = db.selectOneConversations(id);
-        allMessages.moveToLast();
-        return allMessages.getString(allMessages.getColumnIndex("message"));
+        if(allMessages.moveToLast()) {
+            return allMessages.getString(allMessages.getColumnIndex("message"));
+        } else {
+            return "";
+        }
     }
 
     private class HandleContactClick implements AdapterView.OnItemClickListener {
@@ -119,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
             ListView convView = findViewById(R.id.contactView);
             ContactRow clickedRow = (ContactRow)convView.getItemAtPosition(i);
             intent.putExtra("phoneNumber", clickedRow.number);
+            intent.putExtra("groupBoolean", clickedRow.group);
             startActivity(intent);
         }
     }

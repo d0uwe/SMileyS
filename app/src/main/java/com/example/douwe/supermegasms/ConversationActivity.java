@@ -25,15 +25,21 @@ import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 
 public class ConversationActivity extends AppCompatActivity {
     String phoneNumber = null;
+    boolean inGroup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // get who we're conversing with
         setContentView(R.layout.activity_conversation);
         phoneNumber = getIntent().getExtras().getString("phoneNumber");
+        inGroup = getIntent().getExtras().getBoolean("groupBoolean");
         setMessages(phoneNumber);
 
-        findViewById(R.id.sendButton).setOnClickListener(new HandleSendClick());
+        if(inGroup){
+            findViewById(R.id.sendButton).setOnClickListener(new HandleSendGroupClick());
+        } else{
+            findViewById(R.id.sendButton).setOnClickListener(new HandleSendClick());
+        }
 
         // register to broadcasts to refresh listview when there is a new message
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
@@ -81,6 +87,36 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     /**
+     * Get message to be send and send it to all group members.
+     */
+    private class HandleSendGroupClick implements View.OnClickListener {
+        public void onClick(View view) {
+            ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
+            // todo: different name for phonenumber when in group?
+            Cursor groupMembers = db.getGroupMembers(phoneNumber);
+            // get typed text and send it to recipients
+            EditText newMessageBox = findViewById(R.id.newMessage);
+            String newMessage = newMessageBox.getText().toString();
+            // reset edittext, since the message has been send.
+            newMessageBox.setText("");
+
+            if(groupMembers.moveToFirst()){
+                do{
+                    String memberPhoneNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
+                    String memberID = groupMembers.getString(groupMembers.getColumnIndex("groupID"));
+                    String message = memberID + "]" + newMessage;
+                    sendSMS(memberPhoneNumber, message);
+                } while (groupMembers.moveToNext());
+            }
+            // not allowed to send an empty SMS.
+            if (!newMessage.equals("")){
+                System.out.println("inseeting with: " + phoneNumber);
+                sendSMSGroup(phoneNumber, newMessage);
+            }
+        }
+    }
+
+    /**
      * Get message to be send and send it.
      */
     private class HandleSendClick implements View.OnClickListener {
@@ -108,6 +144,15 @@ public class ConversationActivity extends AppCompatActivity {
         sms.sendTextMessage(phoneNumber, null, message, null, null);
         ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
         db.insert(formatNumberToE164(phoneNumber, "NL"), message, false);
+        // refresh listview with the new message
+        setMessages(phoneNumber);
+    }
+
+    public void sendSMSGroup(String phoneNumber, String message) {
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
+        ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
+        db.insert(phoneNumber, message, false);
         // refresh listview with the new message
         setMessages(phoneNumber);
     }
