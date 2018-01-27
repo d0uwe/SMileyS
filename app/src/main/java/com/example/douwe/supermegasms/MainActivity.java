@@ -98,28 +98,33 @@ public class MainActivity extends AppCompatActivity {
         if(allConvs.moveToFirst()){
             do{
                 String id = allConvs.getString(allConvs.getColumnIndex("id"));
+                boolean group = allConvs.getInt(allConvs.getColumnIndex("groupBool")) != 0;
                 System.out.println("this id: " + id);
 
                 String lastMessage = getLastMessage(id, db);
-                contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", getContactName(getApplicationContext(), id), false));
+                if (group){
+                    String groupName = db.getGroupName(id);
+                    contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", groupName, true));
+                } else {
+                    contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", getContactName(getApplicationContext(), id), false));
+                }
 
             } while (allConvs.moveToNext());
         }
         allConvs.close();
-        System.out.println("im here?");
 
-        Cursor allGroups = db.selectAllGroupConversations();
-        if(allGroups.moveToFirst()){
-            do{
-                String id = allGroups.getString(allGroups.getColumnIndex("myID"));
-                String lastMessage = getLastMessage(id, db);
-
-                System.out.println("id iss: " + id);
-                contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", allGroups.getString(allGroups.getColumnIndex("groupName")), true));
-
-            } while (allGroups.moveToNext());
-        }
-        allGroups.close();
+//        Cursor allGroups = db.selectAllGroupConversations();
+//        if(allGroups.moveToFirst()){
+//            do{
+//                String id = allGroups.getString(allGroups.getColumnIndex("myID"));
+//                String lastMessage = getLastMessage(id, db);
+//
+//                System.out.println("id iss: " + id);
+//                contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", allGroups.getString(allGroups.getColumnIndex("groupName")), true));
+//
+//            } while (allGroups.moveToNext());
+//        }
+//        allGroups.close();
 
 
         convView.setAdapter(contactArrayAdapter);

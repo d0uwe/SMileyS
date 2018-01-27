@@ -157,8 +157,5 @@ public class ConversationActivity extends AppCompatActivity {
     public void sendSMSGroup(String phoneNumber, String message) {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
-        ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
-        System.out.println("inserting message with id:  " + phoneNumber);
-        // refresh listview with the new message
     }
 }

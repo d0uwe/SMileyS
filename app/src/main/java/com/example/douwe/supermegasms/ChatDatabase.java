@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.Date;
 
 
 public class ChatDatabase extends SQLiteOpenHelper {
@@ -22,7 +23,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table messages (_id INTEGER PRIMARY KEY AUTOINCREMENT, ID TEXT, sender TEXT, message TEXT, inOut BOOL)");
-        db.execSQL("create table conversations (_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT, groupBool BOOL)");
+        db.execSQL("create table conversations (_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT, groupBool BOOL, lastDate TEXT)");
         db.execSQL("create table groupNames (_id INTEGER PRIMARY KEY AUTOINCREMENT, myID INT, groupName TEXT)");
         db.execSQL("create table groups (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT, groupID INT, myID INT)");
     }
@@ -66,9 +67,10 @@ public class ChatDatabase extends SQLiteOpenHelper {
         if (!found) {
             ContentValues values2 = new ContentValues();
             values2.put("id", phoneNumber);
+            values2.put("lastDate", (new Date().toString()));
             db.insert("conversations", null, values2);
         }
-
+        updateDate(phoneNumber);
 
     }
 
@@ -92,6 +94,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
                 }
             } while (all_convs.moveToNext());
         }
+        updateDate(groupID);
     }
 
     public Cursor selectAll(){
@@ -100,9 +103,16 @@ public class ChatDatabase extends SQLiteOpenHelper {
         return all_messages;
     }
 
+    public String getGroupName(String id){
+        SQLiteDatabase db =  this.getWritableDatabase();
+        Cursor groupName = db.rawQuery("SELECT * FROM groupNames WHERE myID = ?", new String[]{id});
+        groupName.moveToFirst();
+        return groupName.getString(groupName.getColumnIndex("groupName"));
+    }
+
     public Cursor selectAllConversations(){
         SQLiteDatabase db =  this.getWritableDatabase();
-        Cursor allConvs = db.rawQuery("SELECT rowid _id,* FROM conversations", null);
+        Cursor allConvs = db.rawQuery("SELECT rowid _id,* FROM conversations ORDER BY lastDate DESC", null);
         return allConvs;
     }
 
@@ -114,7 +124,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     public Cursor selectOneConversations(String phoneNumber){
         SQLiteDatabase db =  this.getWritableDatabase();
-        Cursor allConvs = db.rawQuery("SELECT * FROM messages WHERE ID = ?", new String[]{phoneNumber});;
+        Cursor allConvs = db.rawQuery("SELECT * FROM messages WHERE ID = ?", new String[]{phoneNumber});
         return allConvs;
     }
 
@@ -141,6 +151,12 @@ public class ChatDatabase extends SQLiteOpenHelper {
         values.put("groupName", groupName);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert("groupNames", null, values);
+        values.clear();
+        values.put("id", Integer.toString(myID));
+        values.put("groupBool", true);
+        values.put("lastDate", (new Date()).toString());
+        System.out.println("i just inserted : "+ myID);
+        db.insert("conversations", null, values);
     }
 
     public void insertNumberInGroup(int myID, String phoneNumber, int theirID){
@@ -159,13 +175,13 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     }
 
-    public void update(Integer id, Integer new_status){
-        System.out.println("i update with: " + Integer.toString(new_status));
+    public void updateDate(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues() ;
-        values.put("amount", new_status);
-
-        db.update("orders", values,  "_id=?", new String[] { String.valueOf(id) });
+        Date date = new Date();
+        values.put("lastDate", date.toString());
+        System.out.println("date is now: " + date.toString());
+        db.update("conversations", values,  "_id=?", new String[] { id });
     }
 }
 
