@@ -1,7 +1,9 @@
 package com.example.douwe.supermegasms;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -11,9 +13,7 @@ import android.provider.ContactsContract;
  */
 
 public class Helpers {
-
-
-    public static String getContactName(Context context, String phoneNumber) {
+    public String getContactName(Context context, String phoneNumber) {
         ContentResolver cr = context.getContentResolver();
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
         Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);

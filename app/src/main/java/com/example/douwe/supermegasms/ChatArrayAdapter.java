@@ -20,6 +20,7 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
     private List<ChatMessage> chatMessageList = new ArrayList<ChatMessage>();
     private Context context;
     private boolean group = false;
+    private Helpers helper = new Helpers();
 
     @Override
     public void add(ChatMessage object) {
@@ -46,50 +47,41 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ChatMessage chatMessageObj = getItem(position);
-        View row = convertView;
-        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View row;
         if (!group) {
-            if (chatMessageObj.left) {
-                row = inflater.inflate(R.layout.right, parent, false);
-            } else {
-                row = inflater.inflate(R.layout.left, parent, false);
-            }
+            row = inflateIndividual(chatMessageObj, parent);
         } else {
-            if (chatMessageObj.left) {
-                row = inflater.inflate(R.layout.right_group, parent, false);
-            } else {
-                row = inflater.inflate(R.layout.left_group, parent, false);
-                String contactName = getContactName(getContext(), chatMessageObj.sender);
-                if (contactName != null && !contactName.isEmpty()){
-                    ((TextView)row.findViewById(R.id.sender)).setText(contactName);
-                } else {
-                    ((TextView)row.findViewById(R.id.sender)).setText(chatMessageObj.sender);
-                }
-            }
+            row = inflateGroup(chatMessageObj, parent);
         }
         ((TextView) row.findViewById(R.id.message)).setText(chatMessageObj.message);
-        chatText = (TextView) row.findViewById(R.id.message);
-        chatText.setText(chatMessageObj.message);
         return row;
     }
 
-    // todo: duplicate with mainactivity
-    public static String getContactName(Context context, String phoneNumber) {
-        ContentResolver cr = context.getContentResolver();
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
-        if (cursor == null) {
-            return null;
+    public View inflateIndividual(ChatMessage chatMessageObj, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View row;
+        if (chatMessageObj.left) {
+            row = inflater.inflate(R.layout.right, parent, false);
+        } else {
+            row = inflater.inflate(R.layout.left, parent, false);
         }
-        String contactName = null;
-        if(cursor.moveToFirst()) {
-            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-        }
+        return row;
+    }
 
-        if(cursor != null && !cursor.isClosed()) {
-            cursor.close();
+    public View inflateGroup(ChatMessage chatMessageObj, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View row;
+        if (chatMessageObj.left) {
+            row = inflater.inflate(R.layout.right_group, parent, false);
+        } else {
+            row = inflater.inflate(R.layout.left_group, parent, false);
+            String contactName = helper.getContactName(getContext(), chatMessageObj.sender);
+            if (contactName != null && !contactName.isEmpty()){
+                ((TextView)row.findViewById(R.id.sender)).setText(contactName);
+            } else {
+                ((TextView)row.findViewById(R.id.sender)).setText(chatMessageObj.sender);
+            }
         }
-
-        return contactName;
+        return row;
     }
 }

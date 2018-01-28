@@ -104,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
                     String groupName = db.getGroupName(id);
                     contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", groupName, true));
                 } else {
-                    contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", getContactName(getApplicationContext(), id), false));
+                    Helpers helpers = new Helpers();
+                    contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", helpers.getContactName(getApplicationContext(), id), false));
                 }
 
             } while (allConvs.moveToNext());
@@ -189,22 +190,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static String getContactName(Context context, String phoneNumber) {
-        ContentResolver cr = context.getContentResolver();
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
-        if (cursor == null) {
-            return null;
-        }
-        String contactName = null;
-        if(cursor.moveToFirst()) {
-            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-        }
 
-        if(cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-
-        return contactName;
-    }
 }

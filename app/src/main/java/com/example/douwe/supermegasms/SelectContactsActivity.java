@@ -23,6 +23,9 @@ import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 
 public class SelectContactsActivity extends AppCompatActivity {
     ArrayList<String> groupContacts = new ArrayList<>();
+    ArrayList<String> phoneNumbers = new ArrayList<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,12 +67,17 @@ public class SelectContactsActivity extends AppCompatActivity {
                             String cNumber = phones.getString(phones.getColumnIndex("data1"));
 
                             // convert number to this one format, to always recognize it in the db.
-                            groupContacts.add(formatNumberToE164(cNumber, "NL"));
+                            phoneNumbers.add(formatNumberToE164(cNumber, "NL"));
                             ArrayAdapter<String> list = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupContacts);
                             ListView groupView = findViewById(R.id.groupListView);
                             groupView.setAdapter(list);
+
+                            String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                            groupContacts.add(name);
+                        } else {
+                            Toast toast = Toast.makeText(getApplicationContext(), "contact has no phone number", Toast.LENGTH_SHORT);
+                            toast.show();
                         }
-                        String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                     }
                 }
                 break;
@@ -95,8 +103,8 @@ public class SelectContactsActivity extends AppCompatActivity {
                 return;
             }
             int groupID = db.getNewGroup(groupName);
-            for(int i = 0; i < groupContacts.size(); i++) {
-                sendSMS(groupContacts.get(i),  Integer.toString(groupID) + "]" + "INV]" + groupName);
+            for(int i = 0; i < phoneNumbers.size(); i++) {
+                sendSMS(phoneNumbers.get(i),  Integer.toString(groupID) + "]" + "INV]" + groupName);
             }
             finish();
         }
