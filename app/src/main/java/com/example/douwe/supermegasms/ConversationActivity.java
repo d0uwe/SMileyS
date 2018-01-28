@@ -11,6 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -46,6 +49,30 @@ public class ConversationActivity extends AppCompatActivity {
                 new IntentFilter("message received"));
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.conversation_options, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add:
+                //Intent i= new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+
+                //startActivityForResult(i, 2000);
+
+                break;
+            case R.id.delete:
+                //Intent intent = new Intent(MainActivity.this, SelectContactsActivity.class);
+                //startActivity(intent);
+                break;
+        }
+        return true;
+    }
+
+
     /**
      * Receives a broadcast when an sms is received. Forces the listview to update.
      */
@@ -78,7 +105,6 @@ public class ConversationActivity extends AppCompatActivity {
                 String message = allMessages.getString(allMessages.getColumnIndex("message"));
                 String sender = allMessages.getString(allMessages.getColumnIndex("sender"));
                 boolean in = allMessages.getInt(allMessages.getColumnIndex("inOut")) == 0;
-                System.out.println(allMessages.getString(allMessages.getColumnIndex("message")));
                 chatArrayAdapter.add(new ChatMessage(in, message, sender));
             } while (allMessages.moveToNext());
         }
@@ -141,7 +167,7 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     /**
-     * Send an SMS.
+     * Send an SMS and inserts the message in the database.
      * @param phoneNumber number of recipient
      * @param message message to be send
      */

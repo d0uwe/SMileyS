@@ -3,9 +3,9 @@
         android:icon="@drawable/ic_menu_add"
         android:showAsAction="ifRoom">
         <item
-            android:id="@+id/menuSortNewest"
+            android:id="@+id/solo_chat"
             android:title="New individual chat" />
         <item
-            android:id="@+id/menuSortRating"
+            android:id="@+id/group_chat"
             android:title="New group" />
 </menu>

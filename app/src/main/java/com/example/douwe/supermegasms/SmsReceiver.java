@@ -26,7 +26,7 @@ public class SmsReceiver extends BroadcastReceiver {
         Bundle intentExtras = intent.getExtras();
 
         if (intentExtras != null) {
-            /* Get Messages */
+            // get messages
             Object[] sms = (Object[]) intentExtras.get("pdus");
 
             for (int i = 0; i < sms.length; ++i) {
@@ -37,9 +37,6 @@ public class SmsReceiver extends BroadcastReceiver {
                 String message = smsMessage.getMessageBody().toString();
 
                 ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
-                db.insert("335566", "hallooo", true);
-                db.insert("4316134", "hallooo", true);
-
                 db.insert("12341641", "hallooo", true);
 
                 processSMS(context, message, phoneNumber);
@@ -91,12 +88,11 @@ public class SmsReceiver extends BroadcastReceiver {
                 String memberID = groupMembers.getString(groupMembers.getColumnIndex("groupID"));
                 String message = memberID + "]ADD]" + phoneNumber + "]" + theirID;
                 sendSMS(memberPhoneNumber, message);
-                // message to new member
+                // message to new member that the other members exist
                 message = theirID + "]ADD]" + memberPhoneNumber + "]" + memberID;
                 sendSMS(phoneNumber, message);
             } while (groupMembers.moveToNext());
         }
-
     }
 
 

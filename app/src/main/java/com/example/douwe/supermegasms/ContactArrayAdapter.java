@@ -41,11 +41,9 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
         row = inflater.inflate(R.layout.contact_row, parent, false);
 
         chatText = row.findViewById(R.id.message);
-        System.out.println("i set: " + chatMessageObj.message);
         chatText.setText(chatMessageObj.message);
         chatText = row.findViewById(R.id.number);
         if (chatMessageObj.name != null && !chatMessageObj.name.isEmpty()){
-            System.out.println(chatMessageObj.name);
             chatText.setText(chatMessageObj.name);
         } else {
             chatText.setText(chatMessageObj.number);

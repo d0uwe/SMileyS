@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         ListView convView = findViewById(R.id.contactView);
         setContactListview(convView);
         convView.setOnItemClickListener(new HandleContactClick());
@@ -72,13 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menuSortNewest:
+            case R.id.solo_chat:
                 Intent i= new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-
                 startActivityForResult(i, 2000);
-
                 break;
-            case R.id.menuSortRating:
+            case R.id.group_chat:
                 Intent intent = new Intent(MainActivity.this, SelectContactsActivity.class);
                 startActivity(intent);
                 break;
@@ -98,9 +97,7 @@ public class MainActivity extends AppCompatActivity {
         if(allConvs.moveToFirst()){
             do{
                 String id = allConvs.getString(allConvs.getColumnIndex("id"));
-                System.out.println(allConvs.getInt(allConvs.getColumnIndex("lastDate")));
                 boolean group = allConvs.getInt(allConvs.getColumnIndex("groupBool")) != 0;
-                System.out.println("this id: " + id);
 
                 String lastMessage = getLastMessage(id, db);
                 if (group){
@@ -177,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
                                     null, null);
                             phones.moveToFirst();
                             String cNumber = phones.getString(phones.getColumnIndex("data1"));
-                            System.out.println("number is:" + cNumber);
 
                             Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
                             intent.putExtra("phoneNumber", cNumber);

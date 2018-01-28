@@ -157,7 +157,6 @@ public class ChatDatabase extends SQLiteOpenHelper {
         values.put("id", Integer.toString(myID));
         values.put("groupBool", true);
         values.put("lastDate", (int)(date.getTime() / 1000));
-        System.out.println("i just inserted : "+ myID);
         db.insert("conversations", null, values);
     }
 
@@ -182,7 +181,6 @@ public class ChatDatabase extends SQLiteOpenHelper {
         ContentValues values = new ContentValues() ;
         Date date = new Date();
         values.put("lastDate", (int)(date.getTime() / 1000));
-        System.out.println("date is now: " + ((int)(date.getTime() / 1000)));
         db.update("conversations", values,  "id=?", new String[] { id });
     }
 }
