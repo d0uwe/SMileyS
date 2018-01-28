@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         if(allConvs.moveToFirst()){
             do{
                 String id = allConvs.getString(allConvs.getColumnIndex("id"));
+                System.out.println(allConvs.getInt(allConvs.getColumnIndex("lastDate")));
                 boolean group = allConvs.getInt(allConvs.getColumnIndex("groupBool")) != 0;
                 System.out.println("this id: " + id);
 

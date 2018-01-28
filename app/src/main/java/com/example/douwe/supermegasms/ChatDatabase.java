@@ -23,7 +23,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table messages (_id INTEGER PRIMARY KEY AUTOINCREMENT, ID TEXT, sender TEXT, message TEXT, inOut BOOL)");
-        db.execSQL("create table conversations (_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT, groupBool BOOL, lastDate TEXT)");
+        db.execSQL("create table conversations (_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT, groupBool BOOL, lastDate INT)");
         db.execSQL("create table groupNames (_id INTEGER PRIMARY KEY AUTOINCREMENT, myID INT, groupName TEXT)");
         db.execSQL("create table groups (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT, groupID INT, myID INT)");
     }
@@ -66,8 +66,9 @@ public class ChatDatabase extends SQLiteOpenHelper {
         }
         if (!found) {
             ContentValues values2 = new ContentValues();
+            Date date = new Date();
             values2.put("id", phoneNumber);
-            values2.put("lastDate", (new Date().toString()));
+            values2.put("lastDate", (int)(date.getTime() / 1000));
             db.insert("conversations", null, values2);
         }
         updateDate(phoneNumber);
@@ -112,7 +113,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     public Cursor selectAllConversations(){
         SQLiteDatabase db =  this.getWritableDatabase();
-        Cursor allConvs = db.rawQuery("SELECT rowid _id,* FROM conversations ORDER BY lastDate DESC", null);
+        Cursor allConvs = db.rawQuery("SELECT * FROM conversations ORDER BY lastDate DESC", null);
         return allConvs;
     }
 
@@ -152,9 +153,10 @@ public class ChatDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert("groupNames", null, values);
         values.clear();
+        Date date = new Date();
         values.put("id", Integer.toString(myID));
         values.put("groupBool", true);
-        values.put("lastDate", (new Date()).toString());
+        values.put("lastDate", (int)(date.getTime() / 1000));
         System.out.println("i just inserted : "+ myID);
         db.insert("conversations", null, values);
     }
@@ -179,9 +181,9 @@ public class ChatDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues() ;
         Date date = new Date();
-        values.put("lastDate", date.toString());
-        System.out.println("date is now: " + date.toString());
-        db.update("conversations", values,  "_id=?", new String[] { id });
+        values.put("lastDate", (int)(date.getTime() / 1000));
+        System.out.println("date is now: " + ((int)(date.getTime() / 1000)));
+        db.update("conversations", values,  "id=?", new String[] { id });
     }
 }
 

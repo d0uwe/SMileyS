@@ -24,5 +24,11 @@ Wegens ziekte is er vandaag niets productiefs gebeurd.
 # 24 januari
 Wanneer er een invite ontvangen wordt, wordt er een identifier gekozen en teruggestuurd. Wanneer zo'n antwoord op een invite wordt ontvangen wordt dit opgeslagen in de database. 
 
-# 25 januari
+# 25 januari 
+ziek :C
+
+# 26 januari
 Wegens griep is er nog steeds niet zo heel veel gebeurd, maar berichten kunnen nu worden verzonden binnen een groepchat en gaan naar alle deelnemers. Ook heb ik vandaag een presentatie gehouden. 
+
+# 27 januari
+De gesprekken lijst wordt nu gesorteerd op basis van laatst verzonden / ontvangen bericht en in een groepchat kun je nu zien wie een bericht heeft verzonden. 
