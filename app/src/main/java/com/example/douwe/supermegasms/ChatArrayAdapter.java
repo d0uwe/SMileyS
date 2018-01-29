@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 // borrowed from: https://trinitytuts.com/simple-chat-application-using-listview-in-android/
 class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
@@ -79,6 +81,8 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
     public View inflateGroup(ChatMessage chatMessageObj, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row;
+        long date = ((long)chatMessageObj.date) * 1000;
+        Date dateObj = new Date(date);
         if (chatMessageObj.left) {
             row = inflater.inflate(R.layout.right_group, parent, false);
         } else {
@@ -90,6 +94,13 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
                 ((TextView)row.findViewById(R.id.sender)).setText(chatMessageObj.sender);
             }
         }
+        System.out.println(date);
+        System.out.println(dateObj);
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(date);
+        System.out.println(c.get(c.MINUTE));
+
+        ((TextView)row.findViewById(R.id.date)).setText(dateObj.toString());
         return row;
     }
 }

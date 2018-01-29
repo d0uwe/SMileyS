@@ -8,6 +8,7 @@ public class ChatMessage {
     public boolean left;
     public String message;
     public String sender;
+    public int date;
 
     public ChatMessage(boolean left, String message) {
         super();
@@ -15,10 +16,11 @@ public class ChatMessage {
         this.message = message;
     }
 
-    public ChatMessage(boolean left, String message, String sender) {
+    public ChatMessage(boolean left, String message, String sender, int date) {
         super();
         this.left = left;
         this.message = message;
         this.sender = sender;
+        this.date = date;
     }
 }

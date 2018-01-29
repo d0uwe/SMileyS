@@ -106,7 +106,8 @@ public class ConversationActivity extends AppCompatActivity {
                 String message = allMessages.getString(allMessages.getColumnIndex("message"));
                 String sender = allMessages.getString(allMessages.getColumnIndex("sender"));
                 boolean in = allMessages.getInt(allMessages.getColumnIndex("inOut")) == 0;
-                chatArrayAdapter.add(new ChatMessage(in, message, sender));
+                int date = allMessages.getInt(allMessages.getColumnIndex("date"));
+                chatArrayAdapter.add(new ChatMessage(in, message, sender, date));
             } while (allMessages.moveToNext());
         }
         allMessages.close();
