@@ -94,12 +94,13 @@ public class MainActivity extends AppCompatActivity {
                 boolean group = allConvs.getInt(allConvs.getColumnIndex("groupBool")) != 0;
 
                 String lastMessage = getLastMessage(id, db);
+                int lastDate = getLastDate(id, db);
                 if (group){
                     String groupName = db.getGroupName(id);
-                    contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", groupName, true));
+                    contactArrayAdapter.add(new ContactRow(lastMessage, id, lastDate, groupName, true));
                 } else {
                     Helpers helpers = new Helpers();
-                    contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", helpers.getContactName(getApplicationContext(), id), false));
+                    contactArrayAdapter.add(new ContactRow(lastMessage, id, lastDate, helpers.getContactName(getApplicationContext(), id), false));
                 }
 
             } while (allConvs.moveToNext());
@@ -135,6 +136,21 @@ public class MainActivity extends AppCompatActivity {
             return allMessages.getString(allMessages.getColumnIndex("message"));
         } else {
             return "";
+        }
+    }
+
+    /**
+     * Get the date of the latest message in a conversation
+     * @param id phoneNumber of which we would like to ge the message
+     * @param db ChatDataBase containing the messages
+     * @return the last message in this conversation.
+     */
+    private int getLastDate(String id, ChatDatabase db){
+        Cursor allMessages = db.selectOneConversations(id);
+        if(allMessages.moveToLast()) {
+            return allMessages.getInt(allMessages.getColumnIndex("date"));
+        } else {
+            return 0;
         }
     }
 

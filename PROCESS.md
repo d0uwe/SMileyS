@@ -32,3 +32,9 @@ Wegens griep is er nog steeds niet zo heel veel gebeurd, maar berichten kunnen n
 
 # 27 januari
 De gesprekken lijst wordt nu gesorteerd op basis van laatst verzonden / ontvangen bericht en in een groepchat kun je nu zien wie een bericht heeft verzonden. 
+
+# 28 januari 
+Code opgeruimd en een helpers file aangemaakt voor functies die in verschillende activities worden gebruikt
+
+# 29 januari
+Datums worden nu opgeslagen bij berichten en weergegeven naast de berichtjes. Ook is het nu mogelijk om een nieuw lid toe te voegen aan een conversatie en een overzicht te zien van mensen die er nu in zitten. Ook in de contacten lijst wordt de laatste datum nu weergegeven.

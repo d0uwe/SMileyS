@@ -52,6 +52,12 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
             row = inflateGroup(chatMessageObj, parent);
         }
         ((TextView) row.findViewById(R.id.message)).setText(chatMessageObj.message);
+        long date = ((long)chatMessageObj.date) * 1000;
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(date);
+        String dateString = c.get(c.MONTH) + 1 + "-" + c.get(c.DAY_OF_MONTH) + " " +
+                c.get(c.HOUR_OF_DAY) + "." + c.get(c.MINUTE) + " " + c.get(c.YEAR);
+        ((TextView)row.findViewById(R.id.date)).setText(dateString);
         return row;
     }
 
@@ -81,8 +87,6 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
     public View inflateGroup(ChatMessage chatMessageObj, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row;
-        long date = ((long)chatMessageObj.date) * 1000;
-        Date dateObj = new Date(date);
         if (chatMessageObj.left) {
             row = inflater.inflate(R.layout.right_group, parent, false);
         } else {
@@ -94,13 +98,6 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
                 ((TextView)row.findViewById(R.id.sender)).setText(chatMessageObj.sender);
             }
         }
-        System.out.println(date);
-        System.out.println(dateObj);
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(date);
-        System.out.println(c.get(c.MINUTE));
-
-        ((TextView)row.findViewById(R.id.date)).setText(dateObj.toString());
         return row;
     }
 }

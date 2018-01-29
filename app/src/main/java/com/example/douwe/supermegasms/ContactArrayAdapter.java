@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
 
@@ -35,23 +36,28 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        ContactRow chatMessageObj = getItem(position);
-        View row = convertView;
+        ContactRow contactRow = getItem(position);
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        row = inflater.inflate(R.layout.contact_row, parent, false);
+        View row = inflater.inflate(R.layout.contact_row, parent, false);
 
         chatText = row.findViewById(R.id.message);
-        chatText.setText(chatMessageObj.message);
+        chatText.setText(contactRow.message);
         chatText = row.findViewById(R.id.number);
-        if (chatMessageObj.name != null && !chatMessageObj.name.isEmpty()){
-            chatText.setText(chatMessageObj.name);
+        if (contactRow.name != null && !contactRow.name.isEmpty()){
+            chatText.setText(contactRow.name);
         } else {
-            chatText.setText(chatMessageObj.number);
+            chatText.setText(contactRow.number);
         }
 
         chatText = (TextView) row.findViewById(R.id.date);
-        chatText.setText("10:42");
-        // TODO: set date.
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(contactRow.date);
+        if (contactRow.date != 0){
+            // TODO move string making to helper.
+            chatText.setText(c.get(c.HOUR) + ":" + c.get(c.MINUTE));
+        } else {
+            chatText.setText("");
+        }
 
         return row;
     }

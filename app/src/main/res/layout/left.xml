@@ -1,19 +1,37 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp">
+
+
 
     <TextView
         android:id="@+id/message"
+        android:text="hi man, how are you?"
+        android:background="@drawable/textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/textview"
-        android:paddingBottom="8dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:text="Sampleleft"
-        android:textColor="#000" />
-</RelativeLayout>
+        android:maxWidth="240dp"
+        android:padding="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/sender"
+        android:layout_marginLeft="8dp"
+        android:textColor="#000"/>
+
+    <TextView
+        android:id="@+id/date"
+        android:text="11:40"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:textSize="10sp"
+        app:layout_constraintLeft_toRightOf="@+id/message"
+        android:layout_marginLeft="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/message" />
+
+</android.support.constraint.ConstraintLayout>
