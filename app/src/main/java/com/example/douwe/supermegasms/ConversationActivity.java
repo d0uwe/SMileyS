@@ -5,24 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.provider.ContactsContract;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+import java.security.acl.Group;
 
 import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 
@@ -57,16 +51,23 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.add:
                 //Intent i= new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
 
                 //startActivityForResult(i, 2000);
+                intent = new Intent(ConversationActivity.this, GroupSettingsActivity.class);
+                intent.putExtra("groupID", phoneNumber);
+                startActivity(intent);
 
                 break;
             case R.id.delete:
                 //Intent intent = new Intent(MainActivity.this, SelectContactsActivity.class);
                 //startActivity(intent);
+                intent = new Intent(ConversationActivity.this, GroupSettingsActivity.class);
+                intent.putExtra("groupID", phoneNumber);
+                startActivity(intent);
                 break;
         }
         return true;

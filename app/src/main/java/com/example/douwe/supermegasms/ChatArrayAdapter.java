@@ -1,10 +1,6 @@
 package com.example.douwe.supermegasms;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +53,12 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         return row;
     }
 
+    /**
+     * Inflate a listview row for an individual chat
+     * @param chatMessageObj object containing the message, sender and other specifics
+     * @param parent a ViewGroup
+     * @return inflated row for in the ListView.
+     */
     public View inflateIndividual(ChatMessage chatMessageObj, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row;
@@ -68,6 +70,12 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         return row;
     }
 
+    /**
+     * Inflate a listview row for a group chat
+     * @param chatMessageObj object containing the message, sender and other specifics
+     * @param parent a ViewGroup
+     * @return inflated row for in the ListView.
+     */
     public View inflateGroup(ChatMessage chatMessageObj, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row;

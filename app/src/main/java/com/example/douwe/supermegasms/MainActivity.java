@@ -3,7 +3,6 @@ package com.example.douwe.supermegasms;
 import android.app.Activity;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,19 +12,14 @@ import android.provider.ContactsContract;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -177,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                             String cNumber = phones.getString(phones.getColumnIndex("data1"));
 
                             Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
-                            intent.putExtra("phoneNumber", cNumber);
+                            intent.putExtra("phoneNumber", formatNumberToE164(cNumber, "NL"));
                             startActivity(intent);
                         }
                         String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
