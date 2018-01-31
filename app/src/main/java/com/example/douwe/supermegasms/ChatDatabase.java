@@ -26,6 +26,8 @@ public class ChatDatabase extends SQLiteOpenHelper {
         db.execSQL("create table conversations (_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT, groupBool BOOL, lastDate INT)");
         db.execSQL("create table groupNames (_id INTEGER PRIMARY KEY AUTOINCREMENT, myID INT, groupName TEXT)");
         db.execSQL("create table groups (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT, groupID INT, myID INT)");
+        db.execSQL("create table blockedUsers (_id INTEGER PRIMARY KEY AUTOINCREMENT, phoneNumber TEXT)");
+
     }
 
     @Override
@@ -188,7 +190,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      */
     public Cursor getGroupMembers(String myID) {
         SQLiteDatabase db =  this.getWritableDatabase();
-        Cursor allMembers = db.rawQuery("SELECT * FROM groups WHERE myID = ?", new String[]{myID});;
+        Cursor allMembers = db.rawQuery("SELECT * FROM groups WHERE myID = ?", new String[]{myID});
         return allMembers;
     }
 
@@ -263,6 +265,46 @@ public class ChatDatabase extends SQLiteOpenHelper {
     }
 
     /**
+     * Get all blocked users.
+     * @return a Cursor containing all blocked users
+     */
+    public Cursor getBlockedUsers() {
+        SQLiteDatabase db =  this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM blockedUsers", new String[]{});
+    }
+
+    /**
+     * Insert a new phonenumber in the list of blocked numbers.
+     * @param phoneNumber Number to be blocked
+     */
+    public void insertBlockUser(String phoneNumber) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("phoneNumber", phoneNumber);
+        db.insert("blockedUsers", null, values);
+    }
+
+    /**
+     * Unblock a phone number.
+     * @param phoneNumber phone number to be unblocked
+     */
+    public void removeBlockUser(String phoneNumber) {
+        SQLiteDatabase db =  this.getWritableDatabase();
+        db.delete("blockedUsers", "phoneNumber = ?", new String[] {phoneNumber});
+    }
+
+    /**
+     * Check if a user is blocked.
+     * @param phoneNumber Phone number to check
+     * @return true if the number is blocked, false if it's not.
+     */
+    public boolean userBlocked(String phoneNumber) {
+        SQLiteDatabase db =  this.getWritableDatabase();
+        Cursor blockedUsers = db.rawQuery("SELECT * FROM blockedUsers WHERE phoneNumber = ?", new String[]{phoneNumber});
+        return blockedUsers.moveToFirst();
+    }
+
+    /**
      * Clears the entire database and creates a new one.
      */
     public void clear() {
@@ -271,6 +313,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS conversations");
         db.execSQL("DROP TABLE IF EXISTS groupNames");
         db.execSQL("DROP TABLE IF EXISTS groups");
+        db.execSQL("DROP TABLE IF EXISTS blockedUsers");
 
         onCreate(db);
     }

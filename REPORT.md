@@ -29,6 +29,8 @@ The GroupSettingsActivity shows an overview of the members of the group and has 
 ### SmsReceiver
 The SmsReceiver file contains a function which listens to incoming SMS messages and calls the right functions to process them. It either executes a part of the protocol explained below, or puts the message in the database. 
 
+### BlockActivity
+The BlockActivity allows a user to select or deselect user who the user would like to block. Blocking means that any personal messages send by a blocked person are ignored, just like groupinvites. Any other grouprelated texts are processed as normal, to prevent getting conversations where not all groupmembers are sending to the same people anymore. A user can add a phonenumber to the blocklist using the add button and remove one by longpressing the name in the list of blocked users.
 
 ## The protocol 
 Individual conversations will work the same as normal sms messages. 

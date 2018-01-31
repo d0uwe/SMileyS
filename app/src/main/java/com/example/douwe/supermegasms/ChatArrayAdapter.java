@@ -26,6 +26,10 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
     private boolean group = false;
     private Helpers helper = new Helpers();
 
+    /**
+     * Add an element to the list.
+     * @param object element to be added
+     */
     @Override
     public void add(ChatMessage object) {
         chatMessageList.add(object);
@@ -45,14 +49,30 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         return this.chatMessageList.size();
     }
 
+    /**
+     * Set a boolean to indicate whether this is a group or not
+     * @param group The boolean
+     */
     public void setGroup(boolean group) {
         this.group = group;
     }
 
+    /**
+     * Get the item at a certain position in the list.
+     * @param index Index of the item that is requested
+     * @return the item at the index.
+     */
     public ChatMessage getItem(int index) {
         return this.chatMessageList.get(index);
     }
 
+    /**
+     * Get the view for an item in the list
+     * @param position position of item of which the view is needed
+     * @param convertView a convertView
+     * @param parent the parent
+     * @return The inflated object
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
         ChatMessage chatMessageObj = getItem(position);
         View row;

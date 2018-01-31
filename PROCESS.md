@@ -44,4 +44,4 @@ De smsjes om iemand te verwijderen uit de groep werken nu, ze moeten alleen nog 
 Verder is de layout voor conversaties nu mooi geworden.
 
 # 31 januari
-Mensen kunnen nu echt verwijderd worden uit een group en krijgen daar een bericht van. Verder heb ik veel gecomment en code net gemaakt. Ook is een groot deel van het final report geschreven.
+Mensen kunnen nu echt verwijderd worden uit een group en krijgen daar een bericht van. Verder heb ik veel gecomment en code net gemaakt. Ook is een groot deel van het final report geschreven. Ook is het nu mogelijk om gebruikers te blokkeren.

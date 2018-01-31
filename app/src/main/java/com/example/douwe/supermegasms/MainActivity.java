@@ -84,15 +84,20 @@ public class MainActivity extends AppCompatActivity {
      * @return succes or not.
      */
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.solo_chat:
                 // make the user pick a contact to chat with
-                Intent i= new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(i, 2000);
+                intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, 2000);
                 break;
             case R.id.group_chat:
                 // send the user to the activity where he can select multiple users for a group.
-                Intent intent = new Intent(MainActivity.this, SelectContactsActivity.class);
+                intent = new Intent(MainActivity.this, SelectContactsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.block_list:
+                intent = new Intent(MainActivity.this, BlockActivity.class);
                 startActivity(intent);
                 break;
         }

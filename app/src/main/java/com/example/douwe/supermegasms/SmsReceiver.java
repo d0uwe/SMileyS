@@ -51,6 +51,7 @@ public class SmsReceiver extends BroadcastReceiver {
      */
     private void processSMS(Context context, String message, String phoneNumber) {
         ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
+        System.out.println("user is: " + db.userBlocked(phoneNumber));
         String[] contents = message.split("]", 3);
 
         // check if it's an header only sms or not
@@ -64,8 +65,10 @@ public class SmsReceiver extends BroadcastReceiver {
 
         } else {
             // process as normal message.
-            db.insert(phoneNumber, message, true);
-            sendBroadcast(context);
+            if (!db.userBlocked(phoneNumber)) {
+                db.insert(phoneNumber, message, true);
+                sendBroadcast(context);
+            }
         }
     }
 
@@ -75,11 +78,12 @@ public class SmsReceiver extends BroadcastReceiver {
         switch (contents[1]) {
             case "INV":
                 // process invite
-                int groupID = db.getNewGroup(contents[2]);
-                helper.sendSMS(phoneNumber, contents[0] + "]" + "INVOK]" + groupID);
-                db.insertNumberInGroup(groupID, phoneNumber, parseInt(contents[0]));
-                sendBroadcast(context);
-
+                if (!db.userBlocked(phoneNumber)) {
+                    int groupID = db.getNewGroup(contents[2]);
+                    helper.sendSMS(phoneNumber, contents[0] + "]" + "INVOK]" + groupID);
+                    db.insertNumberInGroup(groupID, phoneNumber, parseInt(contents[0]));
+                    sendBroadcast(context);
+                }
                 break;
             case "INVOK":
                 // process reply on an invite

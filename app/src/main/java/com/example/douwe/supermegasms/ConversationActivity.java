@@ -71,24 +71,22 @@ public class ConversationActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Send a message to the other group members which indicates you leave and then remove
+     * the contacts from your database.
+     */
     private void removeMe() {
         ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
         // go through all group members
         Cursor groupMembers = db.getGroupMembers(phoneNumber);
         if (groupMembers.moveToFirst()) {
-            do{
+            do {
                 String sendToNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                 String theirID = Integer.toString(groupMembers.getInt(groupMembers.getColumnIndex("groupID")));
-
-                // skip the person to be removed, as they already got a special message
-                if (sendToNumber.equals(phoneNumber) && theirID.equals(phoneNumber)) {
-                    continue;
-                }
                 String removeString = theirID + "]" + "LEAVE" + "]" + phoneNumber;
                 sendSMSGroup(sendToNumber, removeString);
             } while (groupMembers.moveToNext());
         }
-        System.out.println(phoneNumber);
         db.insertGroup(phoneNumber, "0000", "You left this group", false);
         db.removeMeFromGroup(phoneNumber);
     }

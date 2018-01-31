@@ -12,45 +12,39 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-/**
- * Created by Douwe on 1/16/18.
- *
- * This activity allows adding a user to a group and gives an overview of the members of the group.
- * By long pressing a user he can be deleted from the group.
- */
-public class GroupSettingsActivity extends AppCompatActivity {
-    private ArrayList<String> phoneNumbers;
-    private String groupNumber;
+import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 
+public class BlockActivity extends AppCompatActivity {
+    ArrayList<String> phoneNumbers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_settings);
-        groupNumber = getIntent().getExtras().getString("groupID");
+        setContentView(R.layout.activity_block);
 
-        setListView(groupNumber);
+        setListView();
         ((Button) findViewById(R.id.addMember)).setOnClickListener(new HandleAddClick());
-        ((ListView) findViewById(R.id.groupMembers)).setOnItemLongClickListener(new LongHandleClick());
+        ((ListView) findViewById(R.id.blockedUsers)).setOnItemLongClickListener(new LongHandleClick());
     }
 
     /**
-     * Get the list of group members and display their name in the list view if the number is in
-     * the contacts list, otherwise display the phone number.
-     * @param groupNumber The group number of which we want to show messages
+     * Get all blocked numbers from the database and display the contact name if available,
+     * otherwise display the phone number
      */
-    public void setListView(String groupNumber) {
-        ListView listView = findViewById(R.id.groupMembers);
+    public void setListView() {
+        ListView listView = findViewById(R.id.blockedUsers);
         ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
-        Cursor groupMembers = db.getGroupMembers(groupNumber);
+        Cursor blockedUsers = db.getBlockedUsers();
         phoneNumbers = new ArrayList<>();
         ArrayList<String> memberNames = new ArrayList<>();
         Helpers helper = new Helpers();
-        if (groupMembers.moveToFirst()) {
+        if (blockedUsers.moveToFirst()) {
             do {
-                String phoneNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
+                String phoneNumber = blockedUsers.getString(blockedUsers.getColumnIndex("phoneNumber"));
                 phoneNumbers.add(phoneNumber);
                 String contactName = helper.getContactName(getApplicationContext(), phoneNumber);
                 if (contactName != null && !contactName.isEmpty()) {
@@ -58,14 +52,14 @@ public class GroupSettingsActivity extends AppCompatActivity {
                 } else {
                     memberNames.add(phoneNumber);
                 }
-            } while (groupMembers.moveToNext());
+            } while (blockedUsers.moveToNext());
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.my_simple_list_item, R.id.text, memberNames);
         listView.setAdapter(adapter);
     }
 
     /**
-     * Select person to add to the group
+     * Select person to block
      */
     private class HandleAddClick implements View.OnClickListener {
         public void onClick(View view) {
@@ -82,16 +76,12 @@ public class GroupSettingsActivity extends AppCompatActivity {
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
             String phoneNumber = phoneNumbers.get(i);
             ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
-            Helpers helper = new Helpers();
-            // process delete
-            helper.removeNumberFromGroup(groupNumber, phoneNumber, getApplicationContext());
-            // show result in the chat
-            db.insertGroup(groupNumber, phoneNumber, phoneNumber +
-                    " has been removed from the group by you.", false);
-            setListView(groupNumber);
+            db.removeBlockUser(phoneNumber);
+            setListView();
             return true;
         }
     }
+
 
     /**
      * This function is called when an contact has been selected.
@@ -120,9 +110,11 @@ public class GroupSettingsActivity extends AppCompatActivity {
                             phones.moveToFirst();
                             String cNumber = phones.getString(phones.getColumnIndex("data1"));
                             ChatDatabase db= ChatDatabase.getInstance(getApplicationContext());
-
-                            Helpers helper = new Helpers();
-                            helper.sendSMS(cNumber,  groupNumber + "]" + "INV]" + db.getGroupName(groupNumber));
+                            db.insertBlockUser(formatNumberToE164(cNumber, "NL"));
+                            setListView();
+                        } else {
+                            Toast toast = Toast.makeText(getApplicationContext(), "contact has no phone number", Toast.LENGTH_SHORT);
+                            toast.show();
                         }
                     }
                 }

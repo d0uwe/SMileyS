@@ -23,6 +23,10 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
     private List<ContactRow> contactList = new ArrayList<>();
     private Context context;
 
+    /**
+     * Add an element to the list.
+     * @param object element to be added
+     */
     @Override
     public void add(ContactRow object) {
         contactList.add(object);
@@ -51,6 +55,13 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
         return this.contactList.get(index);
     }
 
+    /**
+     * Get the view for an item in the list
+     * @param position position of item of which the view is needed
+     * @param convertView a convertView
+     * @param parent the parent
+     * @return The inflated object
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
         ContactRow contactRow = getItem(position);
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);

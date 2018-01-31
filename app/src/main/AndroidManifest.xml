@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -32,7 +32,8 @@
 
         <activity android:name=".ConversationActivity" />
         <activity android:name=".SelectContactsActivity" />
-        <activity android:name=".GroupSettingsActivity"></activity>
+        <activity android:name=".GroupSettingsActivity" />
+        <activity android:name=".BlockActivity"></activity>
     </application>
 
 </manifest>

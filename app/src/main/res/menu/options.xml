@@ -8,4 +8,7 @@
         <item
             android:id="@+id/group_chat"
             android:title="New group" />
+        <item
+            android:id="@+id/block_list"
+            android:title="Blocklist" />
 </menu>
