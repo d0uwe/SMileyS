@@ -46,6 +46,12 @@ public class SelectContactsActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new HandleFinishClick());
     }
 
+    /**
+     * This function is called when an contact has been selected.
+     * @param reqCode Request code used
+     * @param resultCode Did the request succeed?
+     * @param data data which came with the result
+     */
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
@@ -87,6 +93,9 @@ public class SelectContactsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Allow the user to pick a contact from his contacts list.
+     */
     private class HandlePickContactClick implements View.OnClickListener {
         public void onClick(View view) {
             Intent i=
@@ -95,20 +104,25 @@ public class SelectContactsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Process the selected contacts and create a group.
+     */
     private class HandleFinishClick implements View.OnClickListener {
         public void onClick(View view) {
             ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
             EditText groupNameEditText = findViewById(R.id.groupName);
             String groupName = groupNameEditText.getText().toString();
             if (groupName.equals("")) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Enter a groupname", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "Enter a groupname",
+                        Toast.LENGTH_SHORT);
                 toast.show();
                 return;
             }
             int groupID = db.getNewGroup(groupName);
             for (int i = 0; i < phoneNumbers.size(); i++) {
                 Helpers helper = new Helpers();
-                helper.sendSMS(phoneNumbers.get(i),  Integer.toString(groupID) + "]" + "INV]" + groupName);
+                helper.sendSMS(phoneNumbers.get(i),  Integer.toString(groupID) + "]" +
+                        "INV]" + groupName);
             }
             finish();
         }

@@ -49,39 +49,13 @@ public class SmsReceiver extends BroadcastReceiver {
      * @param message Message received
      * @param phoneNumber Phonenumber of which the message came from
      */
-    private void processSMS(Context context, String message, String phoneNumber){
+    private void processSMS(Context context, String message, String phoneNumber) {
         ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
         String[] contents = message.split("]", 3);
-        Helpers helper = new Helpers();
 
         // check if it's an header only sms or not
         if (contents.length == 3) {
-            // check which header
-            if (contents[1].equals("INV")) {
-                // process invite
-                int groupID = db.getNewGroup(contents[2]);
-                helper.sendSMS(phoneNumber, contents[0] + "]" + "INVOK]" + groupID);
-                db.insertNumberInGroup(groupID, phoneNumber, parseInt(contents[0]));
-                sendBroadcast(context);
-
-            } else if (contents[1].equals("INVOK")) {
-                // process reply on an invite
-                updateMembers(contents[0], phoneNumber, contents[2], context);
-                db.insertNumberInGroup(parseInt(contents[0]), phoneNumber, parseInt(contents[2]));
-
-            } else if (contents[1].equals("ADD")){
-                // add someone to a group
-                // todo: could crash
-                contents = message.split("]", 4);
-                db.insertNumberInGroup(parseInt(contents[0]), contents[2], parseInt(contents[3]));
-
-            } else if (contents[1].equals("REMOVE")) {
-                // remove someone from a group
-                processRemoval(contents, db, phoneNumber);
-
-            } else if (contents[1].equals("LEAVE")) {
-                processLeave(contents, db, phoneNumber);
-            }
+            checkHeader(contents, phoneNumber, context, message);
 
         } else if (contents.length == 2) {
             // message belongs to a group, place it in there.
@@ -92,6 +66,44 @@ public class SmsReceiver extends BroadcastReceiver {
             // process as normal message.
             db.insert(phoneNumber, message, true);
             sendBroadcast(context);
+        }
+    }
+
+    private void checkHeader(String [] contents, String phoneNumber, Context context, String message) {
+        ChatDatabase db = ChatDatabase.getInstance(context);
+        Helpers helper = new Helpers();
+        switch (contents[1]) {
+            case "INV":
+                // process invite
+                int groupID = db.getNewGroup(contents[2]);
+                helper.sendSMS(phoneNumber, contents[0] + "]" + "INVOK]" + groupID);
+                db.insertNumberInGroup(groupID, phoneNumber, parseInt(contents[0]));
+                sendBroadcast(context);
+
+                break;
+            case "INVOK":
+                // process reply on an invite
+                updateMembers(contents[0], phoneNumber, contents[2], context);
+                db.insertNumberInGroup(parseInt(contents[0]), phoneNumber, parseInt(contents[2]));
+
+                break;
+            case "ADD":
+                // add someone to a group
+                // todo: could crash
+                contents = message.split("]", 4);
+                db.insertNumberInGroup(parseInt(contents[0]), contents[2], parseInt(contents[3]));
+
+                break;
+            case "REMOVE":
+                // remove someone from a group
+                processRemoval(contents, db, phoneNumber);
+                sendBroadcast(context);
+
+                break;
+            case "LEAVE":
+                processLeave(contents, db, phoneNumber);
+                sendBroadcast(context);
+                break;
         }
     }
 
@@ -112,7 +124,8 @@ public class SmsReceiver extends BroadcastReceiver {
             // another member of the group has been removed
             String theirID = db.getGroupMemberID(formatNumberToE164(contents[2], "NL"), contents[0]);
             db.removeNumberFromGroup2(contents[0], theirID, contents[2]);
-            db.insertGroup(contents[0], phoneNumber, contents[2] + " has been removed from the group", true);
+            db.insertGroup(contents[0], phoneNumber, contents[2] +
+                    " has been removed from the group", true);
         }
     }
 
@@ -136,7 +149,7 @@ public class SmsReceiver extends BroadcastReceiver {
      * @param theirID The id this phone number is using as identifier for the group
      * @param context A context
      */
-    private void updateMembers(String myId, String phoneNumber, String theirID, Context context){
+    private void updateMembers(String myId, String phoneNumber, String theirID, Context context) {
         ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
         Helpers helper = new Helpers();
         Cursor groupMembers = db.getGroupMembers(myId);

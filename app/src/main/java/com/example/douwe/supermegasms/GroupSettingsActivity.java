@@ -23,8 +23,8 @@ import java.util.ArrayList;
  */
 public class GroupSettingsActivity extends AppCompatActivity {
     private ArrayList<String> phoneNumbers;
-    private ArrayList<String> memberNames;
     private String groupNumber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,12 +36,16 @@ public class GroupSettingsActivity extends AppCompatActivity {
         ((ListView) findViewById(R.id.groupMembers)).setOnItemLongClickListener(new LongHandleClick());
     }
 
+    /**
+     * Extract the messages sent in a conversation so far and display them in the listview.
+     * @param groupNumber The group number of which we want to show messages
+     */
     public void setListView(String groupNumber) {
         ListView listView = findViewById(R.id.groupMembers);
         ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
         Cursor groupMembers = db.getGroupMembers(groupNumber);
         phoneNumbers = new ArrayList<>();
-        memberNames = new ArrayList<>();
+        ArrayList<String> memberNames = new ArrayList<>();
         Helpers helper = new Helpers();
         if (groupMembers.moveToFirst()) {
             do {
@@ -87,6 +91,12 @@ public class GroupSettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function is called when an contact has been selected.
+     * @param reqCode Request code used
+     * @param resultCode Did the request succeed?
+     * @param data data which came with the result
+     */
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);

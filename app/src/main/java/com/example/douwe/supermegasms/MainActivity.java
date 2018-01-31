@@ -174,6 +174,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function is called when an contact has been selected.
+     * @param reqCode Request code used
+     * @param resultCode Did the request succeed?
+     * @param data data which came with the result
+     */
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);

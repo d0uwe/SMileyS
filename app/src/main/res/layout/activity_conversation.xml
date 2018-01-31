@@ -39,7 +39,6 @@
             android:layout_marginTop="1dp"
             android:ems="10"
             android:hint="new message"
-            android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/messageView"
             tools:layout_editor_absoluteX="16dp" />
