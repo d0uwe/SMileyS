@@ -7,16 +7,20 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Douwe on 1/16/18.
+ *
+ * This activity allows adding a user to a group and gives an overview of the members of the group.
+ * By long pressing a user he can be deleted from the group.
+ */
 public class GroupSettingsActivity extends AppCompatActivity {
     private ArrayList<String> phoneNumbers;
     private ArrayList<String> memberNames;
@@ -101,21 +105,12 @@ public class GroupSettingsActivity extends AppCompatActivity {
                             String cNumber = phones.getString(phones.getColumnIndex("data1"));
                             ChatDatabase db= ChatDatabase.getInstance(getApplicationContext());
 
-                            sendSMS(cNumber,  groupNumber + "]" + "INV]" + db.getGroupName(groupNumber));
+                            Helpers helper = new Helpers();
+                            helper.sendSMS(cNumber,  groupNumber + "]" + "INV]" + db.getGroupName(groupNumber));
                         }
                     }
                 }
                 break;
         }
-    }
-
-    /**
-     * Send an SMS out.
-     * @param phoneNumber Number to send the SMS to.
-     * @param message Message to be send to the phone number.
-     */
-    public void sendSMS(String phoneNumber, String message) {
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, null, null);
     }
 }

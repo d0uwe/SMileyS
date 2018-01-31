@@ -16,10 +16,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.security.acl.Group;
-
 import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 
+/**
+ * Created by Douwe on 1/16/18.
+ *
+ * This activity gives an overview of the messages send in either an individual or group
+ * conversation. It also allows sending a new message in this conversation.
+ */
 public class ConversationActivity extends AppCompatActivity {
     String phoneNumber = null;
     boolean inGroup;
@@ -32,6 +36,7 @@ public class ConversationActivity extends AppCompatActivity {
         inGroup = getIntent().getExtras().getBoolean("groupBoolean");
         setMessages(phoneNumber);
 
+        // set what the send button should do
         if(inGroup){
             findViewById(R.id.sendButton).setOnClickListener(new HandleSendGroupClick());
         } else{

@@ -21,6 +21,12 @@ import java.util.ArrayList;
 import static android.telephony.PhoneNumberUtils.formatNumber;
 import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 
+/**
+ * Created by Douwe on 1/16/18.
+ *
+ * This activity allows a user to select a bunch of contacts which he would like to put in a group.
+ * When done, invitations are send out to all these users.
+ */
 public class SelectContactsActivity extends AppCompatActivity {
     ArrayList<String> groupContacts = new ArrayList<>();
     ArrayList<String> phoneNumbers = new ArrayList<>();

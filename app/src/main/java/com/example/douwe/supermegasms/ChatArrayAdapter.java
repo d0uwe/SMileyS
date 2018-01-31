@@ -9,13 +9,21 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-// borrowed from: https://trinitytuts.com/simple-chat-application-using-listview-in-android/
+
+/**
+ * Created by Douwe on 1/16/18.
+ *
+ * This adapter fills the conversation list view. It places messages right or left and sets all
+ * information such as the message, date, contact who send them.
+ *
+ * borrowed from: https://trinitytuts.com/simple-chat-application-using-listview-in-android/
+ * but has been quite extensively altered
+ */
 class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
 
     private TextView chatText;
-    private List<ChatMessage> chatMessageList = new ArrayList<ChatMessage>();
+    private List<ChatMessage> chatMessageList = new ArrayList<>();
     private Context context;
     private boolean group = false;
     private Helpers helper = new Helpers();

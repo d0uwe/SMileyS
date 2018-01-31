@@ -10,6 +10,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+/**
+ * Created by Douwe.
+ *
+ * This array adapter sets the listview containing all conversations which are in the database.
+ * It shows the contact / groupname, last message and time.
+ */
 class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
 
     private TextView chatText;

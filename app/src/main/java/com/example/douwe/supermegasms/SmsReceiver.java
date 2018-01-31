@@ -14,46 +14,51 @@ import static java.lang.Integer.parseInt;
 
 /**
  * Created by Douwe on 1/10/18.
+ *
+ * This class is activated when an SMS comes in and processes it in the right way. It can reply
+ * in the right way to headers from the app, or just place it in the database.
  */
-
 public class SmsReceiver extends BroadcastReceiver {
-
     /**
-     * Put every SMS received in the database. Then send out a broadcast to force refreshes.
+     * Extract the message from incoming SMS messages and send it to the processing function
+     * @param context Context.
+     * @param intent Intent which contains the SMS message
      */
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle intentExtras = intent.getExtras();
-
         if (intentExtras != null) {
             // get messages
             Object[] sms = (Object[]) intentExtras.get("pdus");
 
             for (int i = 0; i < sms.length; ++i) {
-                /* Parse Each Message */
+                // parse each message
                 SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i]);
-
                 String phoneNumber = formatNumberToE164(smsMessage.getOriginatingAddress(), "NL");
                 String message = smsMessage.getMessageBody().toString();
-
-                ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
-                db.insert("12341641", "hallooo", true);
 
                 processSMS(context, message, phoneNumber);
             }
         }
     }
 
-
+    /**
+     * Processes an incoming SMS, either react upon it when it contains a header or place it in the
+     * right conversation in the database
+     * @param context A context
+     * @param message Message received
+     * @param phoneNumber Phonenumber of which the message came from
+     */
     private void processSMS(Context context, String message, String phoneNumber){
         ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
         String[] contents = message.split("]", 3);
+        Helpers helper = new Helpers();
         // check if it's an header only sms or not
         if(contents.length == 3){
             // check which header
             if (contents[1].equals("INV")) {
                 int groupID = db.getNewGroup(contents[2]);
-                sendSMS(phoneNumber, contents[0] + "]" + "INVOK]" + groupID);
+                helper.sendSMS(phoneNumber, contents[0] + "]" + "INVOK]" + groupID);
                 db.insertNumberInGroup(groupID, phoneNumber, parseInt(contents[0]));
             } else if (contents[1].equals("INVOK")) {
                 updateMembers(contents[0], phoneNumber, contents[2], context);
@@ -61,40 +66,46 @@ public class SmsReceiver extends BroadcastReceiver {
             } else if (contents[1].equals("ADD")){
                 // todo: could crash
                 contents = message.split("]", 4);
-
                 db.insertNumberInGroup(parseInt(contents[0]), contents[2], parseInt(contents[3]));
             }
         } else if (contents.length == 2) {
+            // message belongs to a group, place it in there.
             db.insertGroup(contents[0], phoneNumber, contents[1], true);
             sendBroadcast(context);
         } else {
-            System.out.println("inserting: " + message);
             // process as normal message.
-
-            System.out.println("inserting with number: " + phoneNumber + "and message: " + message);
             db.insert(phoneNumber, message, true);
             sendBroadcast(context);
         }
     }
 
-
+    /**
+     * Update the members of a group about adding someone to a group.
+     * @param myId My id for this group
+     * @param phoneNumber Phone number which is added to the group
+     * @param theirID The id this phone number is using as identifier for the group
+     * @param context A context
+     */
     private void updateMembers(String myId, String phoneNumber, String theirID, Context context){
         ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
+        Helpers helper = new Helpers();
         Cursor groupMembers = db.getGroupMembers(myId);
+        // Go through all current members of the group and update them and the new user about their
+        // existence.
         if(groupMembers.moveToFirst()){
             do{
                 // message to existing member
                 String memberPhoneNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                 String memberID = groupMembers.getString(groupMembers.getColumnIndex("groupID"));
                 String message = memberID + "]ADD]" + phoneNumber + "]" + theirID;
-                sendSMS(memberPhoneNumber, message);
+                helper.sendSMS(memberPhoneNumber, message);
+
                 // message to new member that the other members exist
                 message = theirID + "]ADD]" + memberPhoneNumber + "]" + memberID;
-                sendSMS(phoneNumber, message);
+                helper.sendSMS(phoneNumber, message);
             } while (groupMembers.moveToNext());
         }
     }
-
 
     /**
      * Sends a broadcast out when a message is received to refresh listviews with messages
@@ -103,15 +114,5 @@ public class SmsReceiver extends BroadcastReceiver {
     private void sendBroadcast(Context context) {
         Intent intent = new Intent("message received");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-
-    /**
-     * Send an SMS.
-     * @param phoneNumber number of recipient
-     * @param message message to be send
-     */
-    public void sendSMS(String phoneNumber, String message) {
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, null, null);
     }
 }

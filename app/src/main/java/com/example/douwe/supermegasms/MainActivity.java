@@ -21,14 +21,18 @@ import android.widget.ListView;
 
 import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 
-
+/**
+ * Created by Douwe on 1/16/18.
+ *
+ * The MainActivity contains the overview of available conversations and allows making a new
+ * conversation using the settings menu.
+ */
 public class MainActivity extends AppCompatActivity {
     ContactArrayAdapter contactArrayAdapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         ListView convView = findViewById(R.id.contactView);
         setContactListview(convView);
@@ -40,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * When the user comes back to the activity the listviews need to be reloaded because there
+     * might be new messages.
+     */
     @Override
     public void onResume(){
         super.onResume();
@@ -58,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Create the options menu.
+     * @param menu a menu
+     * @return a boolean
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -65,13 +78,20 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Executes the desired action corresponding to which menu item the user clicked.
+     * @param item item which the user clicked
+     * @return succes or not.
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.solo_chat:
+                // make the user pick a contact to chat with
                 Intent i= new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
                 startActivityForResult(i, 2000);
                 break;
             case R.id.group_chat:
+                // send the user to the activity where he can select multiple users for a group.
                 Intent intent = new Intent(MainActivity.this, SelectContactsActivity.class);
                 startActivity(intent);
                 break;
@@ -106,21 +126,6 @@ public class MainActivity extends AppCompatActivity {
             } while (allConvs.moveToNext());
         }
         allConvs.close();
-
-//        Cursor allGroups = db.selectAllGroupConversations();
-//        if(allGroups.moveToFirst()){
-//            do{
-//                String id = allGroups.getString(allGroups.getColumnIndex("myID"));
-//                String lastMessage = getLastMessage(id, db);
-//
-//                System.out.println("id iss: " + id);
-//                contactArrayAdapter.add(new ContactRow(lastMessage, id, "10.42", allGroups.getString(allGroups.getColumnIndex("groupName")), true));
-//
-//            } while (allGroups.moveToNext());
-//        }
-//        allGroups.close();
-
-
         convView.setAdapter(contactArrayAdapter);
     }
 
@@ -154,6 +159,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sends the user to the conversation activity displaying the messages of the conversation
+     * which was clicked.
+     */
     private class HandleContactClick implements AdapterView.OnItemClickListener {
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
@@ -191,14 +200,9 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                         String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        System.out.println("name is:" + name);
-
-
                     }
                 }
                 break;
         }
     }
-
-
 }

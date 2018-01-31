@@ -1,21 +1,19 @@
 package com.example.douwe.supermegasms;
 
-/**
- * Created by Douwe on 1/16/18.
- */
-
 import android.content.Context;
-import android.database.sqlite.SQLiteOpenHelper;
-
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
-import android.telephony.TelephonyManager;
 
 import java.util.Date;
 
-
+/**
+ * Created by Douwe on 1/16/18.
+ *
+ * This database contains all information about messages, which groups there are and which users
+ * these groups have. There are many functions to alter this data.
+ */
 public class ChatDatabase extends SQLiteOpenHelper {
     static ChatDatabase instance;
     public ChatDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -81,7 +79,6 @@ public class ChatDatabase extends SQLiteOpenHelper {
             db.insert("conversations", null, values2);
         }
         updateDate(phoneNumber);
-
     }
 
     /**
@@ -151,6 +148,12 @@ public class ChatDatabase extends SQLiteOpenHelper {
         return allConvs;
     }
 
+    /**
+     * Get the id a certain phone number uses as identifier for a groupchat
+     * @param phoneNumber the phonenumber we want the id of
+     * @param myID the id this phone uses for that groupchat
+     * @return the id which was found or an empty string if none was found.
+     */
     public String getGroupMemberID(String phoneNumber, String myID) {
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor allMembers = db.rawQuery("SELECT * FROM groups WHERE myID = ? AND phoneNumber = ?", new String[]{myID, phoneNumber});;
@@ -262,6 +265,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db =  this.getWritableDatabase();
         db.delete("groups", "phoneNumber = ? AND myID = ? AND groupID = ?", new String[] {phoneNumber, groupNumber, theirID});
     }
+
     public void clear(Context context) {
         SQLiteDatabase db =  this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS orders");
