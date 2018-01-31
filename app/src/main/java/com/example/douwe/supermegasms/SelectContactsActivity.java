@@ -104,14 +104,10 @@ public class SelectContactsActivity extends AppCompatActivity {
             }
             int groupID = db.getNewGroup(groupName);
             for(int i = 0; i < phoneNumbers.size(); i++) {
-                sendSMS(phoneNumbers.get(i),  Integer.toString(groupID) + "]" + "INV]" + groupName);
+                Helpers helper = new Helpers();
+                helper.sendSMS(phoneNumbers.get(i),  Integer.toString(groupID) + "]" + "INV]" + groupName);
             }
             finish();
         }
-    }
-
-    public void sendSMS(String phoneNumber, String message) {
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, null, null);
     }
 }

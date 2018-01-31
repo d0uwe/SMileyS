@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:windowSoftInputMode="adjustResize"
-    tools:layout_editor_absoluteY="81dp"><![CDATA[
-    tools:context="com.example.douwe.supermegasms.ConversationActivity">
+    tools:layout_editor_absoluteY="81dp"
+    android:orientation="vertical">
 
-    ]]>
-
-    <EditText
-        android:id="@+id/newMessage"
-        android:layout_width="306dp"
-        android:layout_height="55dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="1dp"
-        android:ems="10"
-        android:hint="new message"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/messageView"
-        tools:layout_editor_absoluteX="16dp" />
 
     <ListView
         android:id="@+id/messageView"
@@ -30,18 +16,44 @@
         android:divider="@null"
         android:dividerHeight="0dp"
         android:paddingBottom="50dp"
+
         app:layout_constraintBottom_toTopOf="@+id/newMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_weight="9"/>
 
-    <Button
-        android:id="@+id/sendButton"
-        android:layout_width="63dp"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="send"
-        app:layout_constraintStart_toEndOf="@+id/newMessage"
-        app:layout_constraintTop_toTopOf="@+id/newMessage"
-        tools:layout_editor_absoluteY="472dp" />
-</android.support.constraint.ConstraintLayout>
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/newMessage"
+            android:layout_width="306dp"
+            android:layout_height="55dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="1dp"
+            android:ems="10"
+            android:hint="new message"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/messageView"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="63dp"
+            android:layout_height="wrap_content"
+            android:text="send"
+            app:layout_constraintStart_toEndOf="@+id/newMessage"
+            app:layout_constraintTop_toTopOf="@+id/newMessage"
+            tools:layout_editor_absoluteY="472dp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -38,3 +38,7 @@ Code opgeruimd en een helpers file aangemaakt voor functies die in verschillende
 
 # 29 januari
 Datums worden nu opgeslagen bij berichten en weergegeven naast de berichtjes. Ook is het nu mogelijk om een nieuw lid toe te voegen aan een conversatie en een overzicht te zien van mensen die er nu in zitten. Ook in de contacten lijst wordt de laatste datum nu weergegeven.
+
+# 30 januari
+De smsjes om iemand te verwijderen uit de groep werken nu, ze moeten alleen nog geinterpreteerd worden als ze ontvangen worden. 
+Verder is de layout voor conversaties nu mooi geworden.

@@ -49,12 +49,17 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
             chatText.setText(contactRow.number);
         }
 
-        chatText = (TextView) row.findViewById(R.id.date);
+        chatText = row.findViewById(R.id.date);
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(contactRow.date);
+        int minutes = c.get(c.MINUTE);
+        String minuteString = Integer.toString(minutes);
+        if (minutes < 10) {
+            minuteString = "0" + Integer.toString(minutes);
+        }
         if (contactRow.date != 0){
             // TODO move string making to helper.
-            chatText.setText(c.get(c.HOUR) + ":" + c.get(c.MINUTE));
+            chatText.setText(c.get(c.HOUR) + ":" + minuteString);
         } else {
             chatText.setText("");
         }

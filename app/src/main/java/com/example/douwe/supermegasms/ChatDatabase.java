@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
 
 import java.util.Date;
 
@@ -149,6 +151,16 @@ public class ChatDatabase extends SQLiteOpenHelper {
         return allConvs;
     }
 
+    public String getGroupMemberID(String phoneNumber, String myID) {
+        SQLiteDatabase db =  this.getWritableDatabase();
+        Cursor allMembers = db.rawQuery("SELECT * FROM groups WHERE myID = ? AND phoneNumber = ?", new String[]{myID, phoneNumber});;
+        if (allMembers.moveToFirst()){
+            return Integer.toString(allMembers.getInt(allMembers.getColumnIndex("groupID")));
+        } else {
+            return "";
+        }
+    }
+
     /**
      * Check how many group ID's are already taken, and return that amount + 1, since this is an
      * unused id.
@@ -215,6 +227,41 @@ public class ChatDatabase extends SQLiteOpenHelper {
         db.insert("groups", null, values);
     }
 
+    /**
+     * Remove one of the members of a group
+     * @param groupNumber my group number
+     * @param phoneNumber phonenumber of the person to be removed
+     */
+    public void removeNumberFromGroup(String groupNumber, String phoneNumber){
+        Helpers helper = new Helpers();
+        String groupID = getGroupMemberID(phoneNumber, groupNumber);
+        System.out.println("Groupiddd of this person is:: "+ groupID);
+        String removeString = groupID + "]" + "REMOVE" + "]" + "0";
+        helper.sendSMS(phoneNumber, removeString);
+
+
+        Cursor groupMembers = getGroupMembers(groupNumber);
+        if (groupMembers.moveToFirst()) {
+            do{
+                String sendToNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
+                String theirID = Integer.toString(groupMembers.getInt(groupMembers.getColumnIndex("groupID")));
+
+                if (sendToNumber.equals(phoneNumber) && theirID.equals(groupID)){
+                    continue;
+                }
+                removeString = theirID + "]" + "REMOVE" + "]" + phoneNumber;
+                helper.sendSMS(sendToNumber, removeString);
+            } while (groupMembers.moveToNext());
+        }
+
+        SQLiteDatabase db =  this.getWritableDatabase();
+        db.delete("groups", "phoneNumber = ? AND myID = ? AND groupID = ?", new String[] {phoneNumber, groupNumber, groupID});
+    }
+
+    public void removeNumberFromGroup2(String groupNumber, String theirID, String phoneNumber) {
+        SQLiteDatabase db =  this.getWritableDatabase();
+        db.delete("groups", "phoneNumber = ? AND myID = ? AND groupID = ?", new String[] {phoneNumber, groupNumber, theirID});
+    }
     public void clear(Context context) {
         SQLiteDatabase db =  this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS orders");

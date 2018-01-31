@@ -29,6 +29,7 @@ public class GroupSettingsActivity extends AppCompatActivity {
 
         setListView(groupNumber);
         ((Button) findViewById(R.id.addMember)).setOnClickListener(new HandleAddClick());
+        ((ListView) findViewById(R.id.groupMembers)).setOnItemLongClickListener(new LongHandleClick());
     }
 
     public void setListView(String groupNumber) {
@@ -50,7 +51,7 @@ public class GroupSettingsActivity extends AppCompatActivity {
                 }
             } while (groupMembers.moveToNext());
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, android.R.id.text1, memberNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.my_simple_list_item, R.id.text, memberNames);
         listView.setAdapter(adapter);
     }
 
@@ -61,6 +62,20 @@ public class GroupSettingsActivity extends AppCompatActivity {
         public void onClick(View view) {
             Intent i= new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
             startActivityForResult(i, 2000);
+        }
+    }
+
+    /**
+     * Select a person to remove from the group
+     */
+    public class LongHandleClick implements AdapterView.OnItemLongClickListener {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            String phoneNumber = phoneNumbers.get(i);
+            ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
+            db.removeNumberFromGroup(groupNumber, phoneNumber);
+
+            return true;
         }
     }
 
@@ -94,6 +109,11 @@ public class GroupSettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Send an SMS out.
+     * @param phoneNumber Number to send the SMS to.
+     * @param message Message to be send to the phone number.
+     */
     public void sendSMS(String phoneNumber, String message) {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
