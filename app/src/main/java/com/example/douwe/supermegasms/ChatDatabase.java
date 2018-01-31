@@ -107,12 +107,6 @@ public class ChatDatabase extends SQLiteOpenHelper {
         updateDate(groupID);
     }
 
-    public Cursor selectAll(){
-        SQLiteDatabase db =  this.getWritableDatabase();
-        Cursor all_messages = db.rawQuery("SELECT rowid _id,* FROM messages", null);
-        return all_messages;
-    }
-
     /**
      * Get the group name belonging to an id.
      * @param id the id of a group
@@ -134,12 +128,6 @@ public class ChatDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor allConvs = db.rawQuery("SELECT * FROM conversations ORDER BY lastDate DESC", null);
         return allConvs;
-    }
-
-    public Cursor selectAllGroupConversations() {
-        SQLiteDatabase db =  this.getWritableDatabase();
-        Cursor allGroups = db.rawQuery("SELECT rowid _id,* FROM groupNames", null);
-        return allGroups;
     }
 
     /**
@@ -236,7 +224,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Remove one of the members of a group
+     * Remove one of the members of a group and broadcasts this to other group members
      * @param groupNumber my group number
      * @param phoneNumber phonenumber of the person to be removed
      */
@@ -265,19 +253,38 @@ public class ChatDatabase extends SQLiteOpenHelper {
         db.delete("groups", "phoneNumber = ? AND myID = ? AND groupID = ?", new String[] {phoneNumber, groupNumber, groupID});
     }
 
+    /**
+     * Remove a person from the group without a broadcast to other groupmembers.
+     * Used when a broadcast is received from another member.
+     * @param groupNumber The group number a user should be removed from
+     * @param theirID Their id used for this group
+     * @param phoneNumber The phone number to be removed.
+     */
     public void removeNumberFromGroup2(String groupNumber, String theirID, String phoneNumber) {
         SQLiteDatabase db =  this.getWritableDatabase();
         db.delete("groups", "phoneNumber = ? AND myID = ? AND groupID = ?", new String[] {phoneNumber, groupNumber, theirID});
     }
 
+    /**
+     * Removes all members from a group in the database, so that if the user sends a message it
+     * won't be send to anyone.
+     * @param groupNumber the groupnumber to wipe users from.
+     */
     public void removeMeFromGroup(String groupNumber) {
         SQLiteDatabase db =  this.getWritableDatabase();
         db.delete("groups", "myID = ?", new String[] {groupNumber});
     }
 
-    public void clear(Context context) {
+    /**
+     * Clears the entire database and creates a new one.
+     */
+    public void clear() {
         SQLiteDatabase db =  this.getWritableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS orders");
+        db.execSQL("DROP TABLE IF EXISTS messages");
+        db.execSQL("DROP TABLE IF EXISTS conversations");
+        db.execSQL("DROP TABLE IF EXISTS groupNames");
+        db.execSQL("DROP TABLE IF EXISTS groups");
+
         onCreate(db);
     }
 
