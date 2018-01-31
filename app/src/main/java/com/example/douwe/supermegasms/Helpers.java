@@ -58,24 +58,26 @@ public class Helpers {
      */
     public void removeNumberFromGroup(String groupNumber, String phoneNumber, Context context){
         ChatDatabase db = ChatDatabase.getInstance(context);
+        // send message to removed person
         String groupID = db.getGroupMemberID(phoneNumber, groupNumber);
-        System.out.println("Groupiddd of this person is:: "+ groupID);
         String removeString = groupID + "]" + "REMOVE" + "]" + "0";
         sendSMS(phoneNumber, removeString);
 
-
+        // go through all group members
         Cursor groupMembers = db.getGroupMembers(groupNumber);
         if (groupMembers.moveToFirst()) {
-            do {
+            do{
                 String sendToNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                 String theirID = Integer.toString(groupMembers.getInt(groupMembers.getColumnIndex("groupID")));
 
-                if (sendToNumber.equals(phoneNumber) && theirID.equals(groupID)){
+                // skip the person to be removed, as they already got a special message
+                if (sendToNumber.equals(phoneNumber) && theirID.equals(groupID)) {
                     continue;
                 }
                 removeString = theirID + "]" + "REMOVE" + "]" + phoneNumber;
                 sendSMS(sendToNumber, removeString);
             } while (groupMembers.moveToNext());
         }
+        db.removeNumberFromGroup(groupNumber, phoneNumber, groupID);
     }
 }

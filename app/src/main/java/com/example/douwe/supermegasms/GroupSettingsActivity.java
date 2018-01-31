@@ -70,14 +70,19 @@ public class GroupSettingsActivity extends AppCompatActivity {
     }
 
     /**
-     * Select a person to remove from the group
+     * Select a person to remove from the group and update the database.
      */
     public class LongHandleClick implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
             String phoneNumber = phoneNumbers.get(i);
             ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
-            db.removeNumberFromGroup(groupNumber, phoneNumber);
+            Helpers helper = new Helpers();
+            // process delete
+            helper.removeNumberFromGroup(groupNumber, phoneNumber, getApplicationContext());
+            // show result in the chat
+            db.insertGroup(groupNumber, phoneNumber, phoneNumber +
+                    " has been removed from the group by you.", false);
             return true;
         }
     }

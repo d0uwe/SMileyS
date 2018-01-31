@@ -21,25 +21,26 @@
 
     <ListView
         android:id="@+id/groupListView"
-        android:layout_width="368dp"
+        android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/anotherContact"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/groupName" />
+        app:layout_constraintTop_toTopOf="@+id/groupName"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/finish"
         android:layout_width="168dp"
         android:layout_height="51dp"
+        android:layout_marginTop="8dp"
         android:text="Done"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/anotherContact"
-        app:layout_constraintTop_toBottomOf="@+id/groupListView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.973" />
 
     <EditText
         android:id="@+id/groupName"

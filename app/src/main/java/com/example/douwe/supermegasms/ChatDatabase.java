@@ -57,6 +57,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param incoming boolean whether it's send by the user of the phone or another participant
      */
     public void insert(String phoneNumber, String message, boolean incoming) {
+        // set required values
         ContentValues values = new ContentValues();
         Date date = new Date();
         values.put("ID", phoneNumber);
@@ -66,6 +67,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert("messages", null, values);
 
+        // check if we already have this conversation
         Cursor allConvs = selectAllConversations();
         boolean found = false;
         if (allConvs.moveToFirst()) {
@@ -77,12 +79,15 @@ public class ChatDatabase extends SQLiteOpenHelper {
                 }
             } while (allConvs.moveToNext());
         }
+        // if we don't, insert it in the database
         if (!found) {
             ContentValues values2 = new ContentValues();
             values2.put("id", phoneNumber);
+            // dividing by 1000 gives second accuracy, but allows storing in an int
             values2.put("lastDate", (int)(date.getTime() / 1000));
             db.insert("conversations", null, values2);
         }
+        // set date of last activity in this conversation
         updateDate(phoneNumber);
     }
 
@@ -94,6 +99,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param incoming boolean whether it's send by the user of the phone or another participant
      */
     public void insertGroup(String groupID, String phoneNumber, String message, boolean incoming) {
+        // store the message in the database
         ContentValues values = new ContentValues();
         Date date = new Date();
         values.put("ID", groupID);
@@ -104,6 +110,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert("messages", null, values);
 
+        // set date of last activity in this conversation
         updateDate(groupID);
     }
 
@@ -228,27 +235,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param groupNumber my group number
      * @param phoneNumber phonenumber of the person to be removed
      */
-    public void removeNumberFromGroup(String groupNumber, String phoneNumber) {
-        Helpers helper = new Helpers();
-        String groupID = getGroupMemberID(phoneNumber, groupNumber);
-        System.out.println("Groupiddd of this person is:: "+ groupID);
-        String removeString = groupID + "]" + "REMOVE" + "]" + "0";
-        helper.sendSMS(phoneNumber, removeString);
-
-        Cursor groupMembers = getGroupMembers(groupNumber);
-        if (groupMembers.moveToFirst()) {
-            do{
-                String sendToNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
-                String theirID = Integer.toString(groupMembers.getInt(groupMembers.getColumnIndex("groupID")));
-
-                if (sendToNumber.equals(phoneNumber) && theirID.equals(groupID)) {
-                    continue;
-                }
-                removeString = theirID + "]" + "REMOVE" + "]" + phoneNumber;
-                helper.sendSMS(sendToNumber, removeString);
-            } while (groupMembers.moveToNext());
-        }
-
+    public void removeNumberFromGroup(String groupNumber, String phoneNumber, String groupID) {
         SQLiteDatabase db =  this.getWritableDatabase();
         db.delete("groups", "phoneNumber = ? AND myID = ? AND groupID = ?", new String[] {phoneNumber, groupNumber, groupID});
     }

@@ -57,26 +57,40 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         switch (item.getItemId()) {
             case R.id.add:
-                //Intent i= new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-
-                //startActivityForResult(i, 2000);
-                intent = new Intent(ConversationActivity.this, GroupSettingsActivity.class);
+                Intent intent = new Intent(ConversationActivity.this, GroupSettingsActivity.class);
                 intent.putExtra("groupID", phoneNumber);
                 startActivity(intent);
-
                 break;
-            case R.id.delete:
-                //Intent intent = new Intent(MainActivity.this, SelectContactsActivity.class);
-                //startActivity(intent);
-                intent = new Intent(ConversationActivity.this, GroupSettingsActivity.class);
-                intent.putExtra("groupID", phoneNumber);
-                startActivity(intent);
+
+            case R.id.leave:
+                removeMe();
                 break;
         }
         return true;
+    }
+
+    private void removeMe() {
+        ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
+        // go through all group members
+        Cursor groupMembers = db.getGroupMembers(phoneNumber);
+        if (groupMembers.moveToFirst()) {
+            do{
+                String sendToNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
+                String theirID = Integer.toString(groupMembers.getInt(groupMembers.getColumnIndex("groupID")));
+
+                // skip the person to be removed, as they already got a special message
+                if (sendToNumber.equals(phoneNumber) && theirID.equals(phoneNumber)) {
+                    continue;
+                }
+                String removeString = theirID + "]" + "LEAVE" + "]" + phoneNumber;
+                sendSMSGroup(sendToNumber, removeString);
+            } while (groupMembers.moveToNext());
+        }
+        System.out.println(phoneNumber);
+        db.insertGroup(phoneNumber, "0000", "You left this group", false);
+        db.removeMeFromGroup(phoneNumber);
     }
 
 
@@ -164,7 +178,7 @@ public class ConversationActivity extends AppCompatActivity {
             // get typed text and send it to recipients
             EditText newMessageBox = findViewById(R.id.newMessage);
             String newMessage = newMessageBox.getText().toString();
-            // reset edittext, since the message has been send.
+            // reset the text box, since the message has been send.
             newMessageBox.setText("");
 
             // not allowed to send an empty SMS.

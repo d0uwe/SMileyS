@@ -58,24 +58,36 @@ public class SmsReceiver extends BroadcastReceiver {
         if (contents.length == 3) {
             // check which header
             if (contents[1].equals("INV")) {
+                // process invite
                 int groupID = db.getNewGroup(contents[2]);
                 helper.sendSMS(phoneNumber, contents[0] + "]" + "INVOK]" + groupID);
                 db.insertNumberInGroup(groupID, phoneNumber, parseInt(contents[0]));
                 sendBroadcast(context);
+
             } else if (contents[1].equals("INVOK")) {
+                // process reply on an invite
                 updateMembers(contents[0], phoneNumber, contents[2], context);
                 db.insertNumberInGroup(parseInt(contents[0]), phoneNumber, parseInt(contents[2]));
+
             } else if (contents[1].equals("ADD")){
+                // add someone to a group
                 // todo: could crash
                 contents = message.split("]", 4);
                 db.insertNumberInGroup(parseInt(contents[0]), contents[2], parseInt(contents[3]));
+
             } else if (contents[1].equals("REMOVE")) {
+                // remove someone from a group
                 processRemoval(contents, db, phoneNumber);
+
+            } else if (contents[1].equals("LEAVE")) {
+                processLeave(contents, db, phoneNumber);
             }
+
         } else if (contents.length == 2) {
             // message belongs to a group, place it in there.
             db.insertGroup(contents[0], phoneNumber, contents[1], true);
             sendBroadcast(context);
+
         } else {
             // process as normal message.
             db.insert(phoneNumber, message, true);
@@ -83,6 +95,14 @@ public class SmsReceiver extends BroadcastReceiver {
         }
     }
 
+    /**
+     * A person has been removed, if this is the person all members are removed from the group in
+     * the database on this phone so no messages are send out anymore. If it someone else, his
+     * number is removed from the database
+     * @param contents An array containing their and our id of the groupchats
+     * @param db A ChatDatabase instance
+     * @param phoneNumber Phone number of the person to be removed.
+     */
     private void processRemoval(String [] contents, ChatDatabase db, String phoneNumber) {
         if (contents[2].equals("0")) {
             // this person has been removed from the group
@@ -92,7 +112,21 @@ public class SmsReceiver extends BroadcastReceiver {
             // another member of the group has been removed
             String theirID = db.getGroupMemberID(formatNumberToE164(contents[2], "NL"), contents[0]);
             db.removeNumberFromGroup2(contents[0], theirID, contents[2]);
+            db.insertGroup(contents[0], phoneNumber, contents[2] + " has been removed from the group", true);
         }
+    }
+
+    /**
+     * A member of the group wants to leave, remove their number from the database.
+     * @param contents Our and their id are stored in this array
+     * @param db A ChatDatabase instance
+     * @param phoneNumber The phone number of the person who wants to leave
+     */
+    private void processLeave(String [] contents, ChatDatabase db, String phoneNumber) {
+        // another member of the group has left, remove them from the db.
+        String theirID = db.getGroupMemberID(formatNumberToE164(phoneNumber, "NL"), contents[0]);
+        db.removeNumberFromGroup2(contents[0], theirID, phoneNumber);
+        db.insertGroup(contents[0], phoneNumber, phoneNumber + " has left the group", true);
     }
 
     /**
