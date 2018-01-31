@@ -53,8 +53,9 @@ public class SmsReceiver extends BroadcastReceiver {
         ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
         String[] contents = message.split("]", 3);
         Helpers helper = new Helpers();
+
         // check if it's an header only sms or not
-        if(contents.length == 3){
+        if (contents.length == 3) {
             // check which header
             if (contents[1].equals("INV")) {
                 int groupID = db.getNewGroup(contents[2]);
@@ -67,6 +68,16 @@ public class SmsReceiver extends BroadcastReceiver {
                 // todo: could crash
                 contents = message.split("]", 4);
                 db.insertNumberInGroup(parseInt(contents[0]), contents[2], parseInt(contents[3]));
+            } else if (contents[1].equals("REMOVE")) {
+                if (contents[2].equals("0")) {
+                    // this person has been removed from the group
+                    db.insertGroup(contents[0], phoneNumber,"You've been removed from this group.", true);
+                    db.removeMeFromGroup(contents[0]);
+                } else {
+                    // another member of the group has been removed
+                    String theirID = db.getGroupMemberID(formatNumberToE164(contents[2], "NL"), contents[0]);
+                    db.removeNumberFromGroup2(contents[0], theirID, contents[2]);
+                }
             }
         } else if (contents.length == 2) {
             // message belongs to a group, place it in there.
@@ -92,8 +103,8 @@ public class SmsReceiver extends BroadcastReceiver {
         Cursor groupMembers = db.getGroupMembers(myId);
         // Go through all current members of the group and update them and the new user about their
         // existence.
-        if(groupMembers.moveToFirst()){
-            do{
+        if (groupMembers.moveToFirst()) {
+            do {
                 // message to existing member
                 String memberPhoneNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                 String memberID = groupMembers.getString(groupMembers.getColumnIndex("groupID"));

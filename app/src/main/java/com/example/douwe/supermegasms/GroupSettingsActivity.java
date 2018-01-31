@@ -43,7 +43,7 @@ public class GroupSettingsActivity extends AppCompatActivity {
         phoneNumbers = new ArrayList<>();
         memberNames = new ArrayList<>();
         Helpers helper = new Helpers();
-        if(groupMembers.moveToFirst()) {
+        if (groupMembers.moveToFirst()) {
             do {
                 String phoneNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                 phoneNumbers.add(phoneNumber);
@@ -78,7 +78,6 @@ public class GroupSettingsActivity extends AppCompatActivity {
             String phoneNumber = phoneNumbers.get(i);
             ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
             db.removeNumberFromGroup(groupNumber, phoneNumber);
-
             return true;
         }
     }

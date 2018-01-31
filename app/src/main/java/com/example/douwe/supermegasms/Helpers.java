@@ -30,11 +30,11 @@ public class Helpers {
             return null;
         }
         String contactName = null;
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if(cursor != null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
 
@@ -66,7 +66,7 @@ public class Helpers {
 
         Cursor groupMembers = db.getGroupMembers(groupNumber);
         if (groupMembers.moveToFirst()) {
-            do{
+            do {
                 String sendToNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                 String theirID = Integer.toString(groupMembers.getInt(groupMembers.getColumnIndex("groupID")));
 

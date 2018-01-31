@@ -21,8 +21,6 @@ import java.util.List;
  * but has been quite extensively altered
  */
 class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
-
-    private TextView chatText;
     private List<ChatMessage> chatMessageList = new ArrayList<>();
     private Context context;
     private boolean group = false;
@@ -39,6 +37,10 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         this.context = context;
     }
 
+    /**
+     * Get the size of the contacts list.
+     * @return integer containing the size
+     */
     public int getCount() {
         return this.chatMessageList.size();
     }

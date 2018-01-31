@@ -27,6 +27,7 @@ import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 public class ConversationActivity extends AppCompatActivity {
     String phoneNumber = null;
     boolean inGroup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +38,7 @@ public class ConversationActivity extends AppCompatActivity {
         setMessages(phoneNumber);
 
         // set what the send button should do
-        if(inGroup){
+        if (inGroup){
             findViewById(R.id.sendButton).setOnClickListener(new HandleSendGroupClick());
         } else{
             findViewById(R.id.sendButton).setOnClickListener(new HandleSendClick());
@@ -106,8 +107,8 @@ public class ConversationActivity extends AppCompatActivity {
         }
 
         // extract all resulting messages
-        if(allMessages.moveToFirst()){
-            do{
+        if (allMessages.moveToFirst()) {
+            do {
                 String message = allMessages.getString(allMessages.getColumnIndex("message"));
                 String sender = allMessages.getString(allMessages.getColumnIndex("sender"));
                 boolean in = allMessages.getInt(allMessages.getColumnIndex("inOut")) == 0;
@@ -141,8 +142,8 @@ public class ConversationActivity extends AppCompatActivity {
             if (newMessage.equals("")){
                 return;
             }
-            if(groupMembers.moveToFirst()){
-                do{
+            if (groupMembers.moveToFirst()) {
+                do {
                     String memberPhoneNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                     String memberID = groupMembers.getString(groupMembers.getColumnIndex("groupID"));
                     String message = memberID + "]" + newMessage;
@@ -167,7 +168,7 @@ public class ConversationActivity extends AppCompatActivity {
             newMessageBox.setText("");
 
             // not allowed to send an empty SMS.
-            if (!newMessage.equals("")){
+            if (!newMessage.equals("")) {
                 sendSMS(phoneNumber, newMessage);
             }
         }

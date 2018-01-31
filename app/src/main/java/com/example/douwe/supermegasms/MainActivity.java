@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private int getLastDate(String id, ChatDatabase db){
         Cursor allMessages = db.selectOneConversations(id);
-        if(allMessages.moveToLast()) {
+        if (allMessages.moveToLast()) {
             return allMessages.getInt(allMessages.getColumnIndex("date"));
         } else {
             return 0;

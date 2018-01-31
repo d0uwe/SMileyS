@@ -38,8 +38,13 @@ public class ChatDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * Return an instance of the database if available, otherwise create one.
+     * @param context a context
+     * @return a ChatDatabase instance
+     */
     public static ChatDatabase getInstance(Context context) {
-        if (instance == null){
+        if (instance == null) {
             instance = new ChatDatabase(context, "messages", null, 1);
         }
         return instance;
@@ -51,7 +56,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param message the actual message
      * @param incoming boolean whether it's send by the user of the phone or another participant
      */
-    public void insert(String phoneNumber, String message, boolean incoming){
+    public void insert(String phoneNumber, String message, boolean incoming) {
         ContentValues values = new ContentValues();
         Date date = new Date();
         values.put("ID", phoneNumber);
@@ -63,8 +68,8 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
         Cursor allConvs = selectAllConversations();
         boolean found = false;
-        if(allConvs.moveToFirst()){
-            do{
+        if (allConvs.moveToFirst()) {
+            do {
                 String id = allConvs.getString(allConvs.getColumnIndex("id"));
                 if (id.equals(phoneNumber)) {
                     found = true;
@@ -88,7 +93,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param message the actual message
      * @param incoming boolean whether it's send by the user of the phone or another participant
      */
-    public void insertGroup(String groupID, String phoneNumber, String message, boolean incoming){
+    public void insertGroup(String groupID, String phoneNumber, String message, boolean incoming) {
         ContentValues values = new ContentValues();
         Date date = new Date();
         values.put("ID", groupID);
@@ -113,7 +118,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param id the id of a group
      * @return a string containing the name of the group
      */
-    public String getGroupName(String id){
+    public String getGroupName(String id) {
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor groupName = db.rawQuery("SELECT * FROM groupNames WHERE myID = ?", new String[]{id});
         groupName.moveToFirst();
@@ -125,13 +130,13 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * message in a conversation
      * @return Cursor containing conversation id and date of last message
      */
-    public Cursor selectAllConversations(){
+    public Cursor selectAllConversations() {
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor allConvs = db.rawQuery("SELECT * FROM conversations ORDER BY lastDate DESC", null);
         return allConvs;
     }
 
-    public Cursor selectAllGroupConversations(){
+    public Cursor selectAllGroupConversations() {
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor allGroups = db.rawQuery("SELECT rowid _id,* FROM groupNames", null);
         return allGroups;
@@ -142,7 +147,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param phoneNumber id of the conversation, either a phonenumber or a group id
      * @return Cursor containing all the messages in the conversation.
      */
-    public Cursor selectOneConversations(String phoneNumber){
+    public Cursor selectOneConversations(String phoneNumber) {
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor allConvs = db.rawQuery("SELECT * FROM messages WHERE ID = ?", new String[]{phoneNumber});
         return allConvs;
@@ -170,11 +175,11 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param groupName The name of the group, so it can be inserted in the database with the id.
      * @return the groupID as integer
      */
-    public int getNewGroup(String groupName){
+    public int getNewGroup(String groupName) {
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor allGroups = db.rawQuery("SELECT * FROM groupNames", null);
         int groupID = 0;
-        if(allGroups.moveToLast()) {
+        if (allGroups.moveToLast()) {
             groupID = allGroups.getInt(allGroups.getColumnIndex("myID")) + 1;
         }
         insertGroup(groupID, groupName);
@@ -186,7 +191,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param myID the group ID
      * @return Cursor containing all group members.
      */
-    public Cursor getGroupMembers(String myID){
+    public Cursor getGroupMembers(String myID) {
         SQLiteDatabase db =  this.getWritableDatabase();
         Cursor allMembers = db.rawQuery("SELECT * FROM groups WHERE myID = ?", new String[]{myID});;
         return allMembers;
@@ -197,7 +202,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param myID the identifier for this new group
      * @param groupName the group name for this new group
      */
-    public void insertGroup(int myID, String groupName){
+    public void insertGroup(int myID, String groupName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // register the groupID and name
@@ -221,7 +226,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param phoneNumber the phone number of the person to be added
      * @param theirID the ID the other number uses for this conversation
      */
-    public void insertNumberInGroup(int myID, String phoneNumber, int theirID){
+    public void insertNumberInGroup(int myID, String phoneNumber, int theirID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("myID", myID);
@@ -235,13 +240,12 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * @param groupNumber my group number
      * @param phoneNumber phonenumber of the person to be removed
      */
-    public void removeNumberFromGroup(String groupNumber, String phoneNumber){
+    public void removeNumberFromGroup(String groupNumber, String phoneNumber) {
         Helpers helper = new Helpers();
         String groupID = getGroupMemberID(phoneNumber, groupNumber);
         System.out.println("Groupiddd of this person is:: "+ groupID);
         String removeString = groupID + "]" + "REMOVE" + "]" + "0";
         helper.sendSMS(phoneNumber, removeString);
-
 
         Cursor groupMembers = getGroupMembers(groupNumber);
         if (groupMembers.moveToFirst()) {
@@ -249,7 +253,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
                 String sendToNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                 String theirID = Integer.toString(groupMembers.getInt(groupMembers.getColumnIndex("groupID")));
 
-                if (sendToNumber.equals(phoneNumber) && theirID.equals(groupID)){
+                if (sendToNumber.equals(phoneNumber) && theirID.equals(groupID)) {
                     continue;
                 }
                 removeString = theirID + "]" + "REMOVE" + "]" + phoneNumber;
@@ -266,6 +270,11 @@ public class ChatDatabase extends SQLiteOpenHelper {
         db.delete("groups", "phoneNumber = ? AND myID = ? AND groupID = ?", new String[] {phoneNumber, groupNumber, theirID});
     }
 
+    public void removeMeFromGroup(String groupNumber) {
+        SQLiteDatabase db =  this.getWritableDatabase();
+        db.delete("groups", "myID = ?", new String[] {groupNumber});
+    }
+
     public void clear(Context context) {
         SQLiteDatabase db =  this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS orders");
@@ -277,7 +286,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
      * current time.
      * @param id the ID of te group which date needs to be updated
      */
-    public void updateDate(String id){
+    public void updateDate(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues() ;
         Date date = new Date();

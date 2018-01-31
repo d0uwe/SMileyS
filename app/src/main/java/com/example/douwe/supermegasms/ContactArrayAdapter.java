@@ -34,10 +34,19 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
         this.context = context;
     }
 
+    /**
+     * Get the size of the contacts list.
+     * @return integer containing the size
+     */
     public int getCount() {
         return this.contactList.size();
     }
 
+    /**
+     * Get an item at a certain position in the list.
+     * @param index index of the item requested
+     * @return the object at this index.
+     */
     public ContactRow getItem(int index) {
         return this.contactList.get(index);
     }

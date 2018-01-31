@@ -31,7 +31,6 @@ public class SelectContactsActivity extends AppCompatActivity {
     ArrayList<String> groupContacts = new ArrayList<>();
     ArrayList<String> phoneNumbers = new ArrayList<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +45,6 @@ public class SelectContactsActivity extends AppCompatActivity {
         Button doneButton = findViewById(R.id.finish);
         doneButton.setOnClickListener(new HandleFinishClick());
     }
-
-
 
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
@@ -103,13 +100,13 @@ public class SelectContactsActivity extends AppCompatActivity {
             ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
             EditText groupNameEditText = findViewById(R.id.groupName);
             String groupName = groupNameEditText.getText().toString();
-            if (groupName.equals("")){
+            if (groupName.equals("")) {
                 Toast toast = Toast.makeText(getApplicationContext(), "Enter a groupname", Toast.LENGTH_SHORT);
                 toast.show();
                 return;
             }
             int groupID = db.getNewGroup(groupName);
-            for(int i = 0; i < phoneNumbers.size(); i++) {
+            for (int i = 0; i < phoneNumbers.size(); i++) {
                 Helpers helper = new Helpers();
                 helper.sendSMS(phoneNumbers.get(i),  Integer.toString(groupID) + "]" + "INV]" + groupName);
             }
