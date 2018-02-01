@@ -44,15 +44,18 @@ public class GroupSettingsActivity extends AppCompatActivity {
     public void setListView(String groupNumber) {
         ListView listView = findViewById(R.id.groupMembers);
         ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
-        Cursor groupMembers = db.getGroupMembers(groupNumber);
-        phoneNumbers = new ArrayList<>();
         ArrayList<String> memberNames = new ArrayList<>();
+        phoneNumbers = new ArrayList<>();
         Helpers helper = new Helpers();
+
+        // loop through all members
+        Cursor groupMembers = db.getGroupMembers(groupNumber);
         if (groupMembers.moveToFirst()) {
             do {
                 String phoneNumber = groupMembers.getString(groupMembers.getColumnIndex("phoneNumber"));
                 phoneNumbers.add(phoneNumber);
                 String contactName = helper.getContactName(getApplicationContext(), phoneNumber);
+                // check if the contact name is available
                 if (contactName != null && !contactName.isEmpty()) {
                     memberNames.add(contactName);
                 } else {

@@ -38,15 +38,18 @@ public class BlockActivity extends AppCompatActivity {
     public void setListView() {
         ListView listView = findViewById(R.id.blockedUsers);
         ChatDatabase db = ChatDatabase.getInstance(getApplicationContext());
-        Cursor blockedUsers = db.getBlockedUsers();
         phoneNumbers = new ArrayList<>();
         ArrayList<String> memberNames = new ArrayList<>();
         Helpers helper = new Helpers();
+
+        // go through all blocked users
+        Cursor blockedUsers = db.getBlockedUsers();
         if (blockedUsers.moveToFirst()) {
             do {
                 String phoneNumber = blockedUsers.getString(blockedUsers.getColumnIndex("phoneNumber"));
                 phoneNumbers.add(phoneNumber);
                 String contactName = helper.getContactName(getApplicationContext(), phoneNumber);
+                // check if there is a contact name available
                 if (contactName != null && !contactName.isEmpty()) {
                     memberNames.add(contactName);
                 } else {
