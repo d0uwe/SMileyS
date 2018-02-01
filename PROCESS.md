@@ -47,4 +47,4 @@ Verder is de layout voor conversaties nu mooi geworden.
 Mensen kunnen nu echt verwijderd worden uit een group en krijgen daar een bericht van. Verder heb ik veel gecomment en code net gemaakt. Ook is een groot deel van het final report geschreven. Ook is het nu mogelijk om gebruikers te blokkeren.
 
 # 1 februari
-Enkele layout veranderingen.
+Enkele layout veranderingen een een hoop opschoning.

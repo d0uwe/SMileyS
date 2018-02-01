@@ -28,7 +28,7 @@ The database has functions to insert users in groups, add messages, register a n
 The GroupSettingsActivity shows an overview of the members of the group and has a button to add a new person to the group. By long pressing an member of the group, the person can be removed from the group. This will be broadcasted to all members of the group, on which they will no longer send messages to this number when they send a message in the group. The phone of the removed person will keep the conversation and be shown a message that he has been removed from the group. Sending a message in the group will do nothing, except for show it to the user. 
 
 ### SmsReceiver
-The SmsReceiver file contains a function which listens to incoming SMS messages and calls the right functions to process them. It either executes a part of the protocol explained below, or puts the message in the database. 
+The SmsReceiver file contains a function which listens to incoming SMS messages and calls the right functions to process them. It either executes a part of the protocol explained below, or puts the message in the database together with the date the message was received.
 
 ### BlockActivity
 The BlockActivity allows a user to select or deselect user who the user would like to block. Blocking means that any personal messages send by a blocked person are ignored, just like groupinvites. Any other grouprelated texts are processed as normal, to prevent getting conversations where not all groupmembers are sending to the same people anymore. A user can add a phonenumber to the blocklist using the add button and remove one by longpressing the name in the list of blocked users.
@@ -79,5 +79,9 @@ The first challenges was thinking of a way to handle the groupID's. I first want
 
 The second challenge was getting everything in the database, and also getting it out correctly. Especially the dates where quite a hastle, but I decided to throw away the millisecond precision of the epoch time, which makes it fit into an int again. This made sorting relatively easy, and by multiplying them with 1000, they can be used as normal epoch dates again. 
 
+Another challenge were the layouts which had to scale properly when the keyboard came up. This has eventually been solved by using a linear layout and give elements a weight. 
+
 # Defending design choices
 Currently a group has no admin, who has to remove people and add people. Everyone in the group has the same rights. This be abused, but also doesn't force the admin to remove and add everyone, which costs a lot of text messages if the group is large. This way the costs can be spread out. 
+
+The original idea was negotiating a mutual groupID between members. This has changed to everyone having his own idea, and this way the groupchat can already start without receiving a reply from everyone. This increases the speed of creating a groupchat and reduces the amount of text messages used.
