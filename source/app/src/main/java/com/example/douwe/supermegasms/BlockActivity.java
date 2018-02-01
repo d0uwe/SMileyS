@@ -18,7 +18,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static android.telephony.PhoneNumberUtils.formatNumberToE164;
-
+/**
+ * Created by Douwe on 1/31/18.
+ *
+ * This activity gives an overview of the currently blocked users and allows the user to block
+ * other users or unblock other users.
+ */
 public class BlockActivity extends AppCompatActivity {
     ArrayList<String> phoneNumbers;
     @Override
