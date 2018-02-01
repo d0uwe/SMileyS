@@ -14,14 +14,15 @@ The ConversationAcitivity shows a list of all the messages in a group / individu
 The SelectContactsActivity allows a user to select as many contacts as he wants to add to the group, set a name for the new group and there is a button to indicate that the user is done. When this button is clicked, invitations are sent out to the selected numbers and the group is registered in the ChatDatabase. After this is all done, the activity is ended, returning the user to the mainActivity where the newly made group is now displayed in the list of conversations. 
 
 ### ChatDatabase
-The ChatDatabase contains multiple tables, messages, groupNames, groups and conversations. 
+The ChatDatabase contains multiple tables, messages, groupNames, groups, blockedUsers and conversations. 
 
 * The messages table contains all messages, with information such as: to which individual conversation or group conversation does this message belong, what was the date, who was the sender and was the message incoming or not. 
 * The groupNames table contains groupID's and which name the group has.
 * The groups table contains rows with: the users ID for a group conversation, the phone number of a member of this group and the id this phone number uses for the conversation.
-* the conversations table contains the id of groups / phonenumber of individuals of which there is a conversation with, a boolean whether this conversation is a group and the date when there was last activity in this group. This is used for the sorting in the MainActivity.
+* The conversations table contains the id of groups / phonenumber of individuals of which there is a conversation with, a boolean whether this conversation is a group and the date when there was last activity in this group. This is used for the sorting in the MainActivity.
+* The blockedUsers table contains rows which only contains a phone number. When a number is in this table, messages will be blocked. 
 
-The database has functions to insert users in groups, add messages, register a new group, etc.
+The database has functions to insert users in groups, add messages, register a new group, block a user, check if a user is blocked, etc.
 
 ### GroupSettingsActivity
 The GroupSettingsActivity shows an overview of the members of the group and has a button to add a new person to the group. By long pressing an member of the group, the person can be removed from the group. This will be broadcasted to all members of the group, on which they will no longer send messages to this number when they send a message in the group. The phone of the removed person will keep the conversation and be shown a message that he has been removed from the group. Sending a message in the group will do nothing, except for show it to the user. 
