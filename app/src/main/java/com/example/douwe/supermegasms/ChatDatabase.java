@@ -167,9 +167,21 @@ public class ChatDatabase extends SQLiteOpenHelper {
     }
 
     /**
+     * Check whether a number is actually in a group.
+     * @param phoneNumber phone number which should be checked
+     * @param myID my ID for the group of which we want to check
+     * @return true if the number is in the group, else false
+     */
+    public boolean numberInGroup(String phoneNumber, String myID) {
+        SQLiteDatabase db =  this.getWritableDatabase();
+        Cursor allMembers = db.rawQuery("SELECT * FROM groups WHERE myID = ? AND phoneNumber = ?", new String[]{myID, phoneNumber});;
+        return allMembers.moveToFirst();
+    }
+
+    /**
      * Check how many group ID's are already taken, and return that amount + 1, since this is an
      * unused id.
-     * @param groupName The name of the group, so it can be inserted in the database with the id.
+     * @param groupName the name of the group, so it can be inserted in the database with the id.
      * @return the groupID as integer
      */
     public int getNewGroup(String groupName) {
@@ -186,7 +198,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
     /**
      * Get all members belonging to one group conversation
      * @param myID the group ID
-     * @return Cursor containing all group members.
+     * @return cursor containing all group members.
      */
     public Cursor getGroupMembers(String myID) {
         SQLiteDatabase db =  this.getWritableDatabase();
@@ -218,7 +230,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Add a new number to a existing group in the database
+     * Add a new number to a existing group in the database.
      * @param myID the identifier for the group
      * @param phoneNumber the phone number of the person to be added
      * @param theirID the ID the other number uses for this conversation
@@ -235,7 +247,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
     /**
      * Remove one of the members of a group and broadcasts this to other group members
      * @param groupNumber my group number
-     * @param phoneNumber phonenumber of the person to be removed
+     * @param phoneNumber phone number of the person to be removed
      */
     public void removeNumberFromGroup(String groupNumber, String phoneNumber, String groupID) {
         SQLiteDatabase db =  this.getWritableDatabase();
@@ -245,9 +257,9 @@ public class ChatDatabase extends SQLiteOpenHelper {
     /**
      * Remove a person from the group without a broadcast to other groupmembers.
      * Used when a broadcast is received from another member.
-     * @param groupNumber The group number a user should be removed from
-     * @param theirID Their id used for this group
-     * @param phoneNumber The phone number to be removed.
+     * @param groupNumber the group number a user should be removed from
+     * @param theirID their id used for this group
+     * @param phoneNumber the phone number to be removed.
      */
     public void removeNumberFromGroup2(String groupNumber, String theirID, String phoneNumber) {
         SQLiteDatabase db =  this.getWritableDatabase();
@@ -266,7 +278,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     /**
      * Get all blocked users.
-     * @return a Cursor containing all blocked users
+     * @return a cursor containing all blocked users
      */
     public Cursor getBlockedUsers() {
         SQLiteDatabase db =  this.getWritableDatabase();
@@ -275,7 +287,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     /**
      * Insert a new phonenumber in the list of blocked numbers.
-     * @param phoneNumber Number to be blocked
+     * @param phoneNumber number to be blocked
      */
     public void insertBlockUser(String phoneNumber) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -295,7 +307,7 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     /**
      * Check if a user is blocked.
-     * @param phoneNumber Phone number to check
+     * @param phoneNumber phone number to check
      * @return true if the number is blocked, false if it's not.
      */
     public boolean userBlocked(String phoneNumber) {

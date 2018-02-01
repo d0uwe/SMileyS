@@ -12,6 +12,8 @@
         android:paddingRight="3dp"
         android:paddingTop="3dp"
         android:text="sample contact"
+        android:textStyle="bold"
+        android:textSize = "18sp"
         android:textColor="#000" />
 
     <TextView
@@ -21,7 +23,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/number"
-        android:text="dit was is bericht"
+        android:text="dit is een bericht"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:textColor="#000"/>

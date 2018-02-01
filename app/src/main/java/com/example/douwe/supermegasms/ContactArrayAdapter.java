@@ -77,20 +77,34 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
         }
 
         chatText = row.findViewById(R.id.date);
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(contactRow.date);
-        int minutes = c.get(c.MINUTE);
-        String minuteString = Integer.toString(minutes);
-        if (minutes < 10) {
-            minuteString = "0" + Integer.toString(minutes);
-        }
+        String dateText = getDate(contactRow);
+
         if (contactRow.date != 0){
-            // TODO move string making to helper.
-            chatText.setText(c.get(c.HOUR) + ":" + minuteString);
+            chatText.setText(dateText);
         } else {
             chatText.setText("");
         }
 
         return row;
+    }
+
+    private String getDate(ContactRow contactRow) {
+        String dateString;
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(contactRow.date);
+        Calendar rightNow = Calendar.getInstance();
+
+        long difference = rightNow.getTimeInMillis() - c.getTimeInMillis();
+        int secondDifference = (int)(difference / 1000);
+        if (secondDifference > (24 * 60 * 60)) {
+            dateString = Integer.toString(c.get(c.MONTH) + 1) + Integer.toString(c.get(c.DAY_OF_MONTH));
+        } else {
+            String minuteString = Integer.toString(c.get(c.MINUTE));
+            if ((c.get(c.MINUTE)) < 10) {
+                minuteString = "0" + minuteString;
+            }
+            dateString = c.get(c.HOUR_OF_DAY) + ":" + minuteString;
+        }
+        return dateString;
     }
 }

@@ -85,8 +85,13 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         long date = ((long)chatMessageObj.date) * 1000;
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(date);
-        String dateString = c.get(c.MONTH) + 1 + "-" + c.get(c.DAY_OF_MONTH) + " " +
-                c.get(c.HOUR_OF_DAY) + "." + c.get(c.MINUTE) + " " + c.get(c.YEAR);
+        int minutes = c.get(c.MINUTE);
+        String minuteString = Integer.toString(minutes);
+        if (minutes < 10) {
+            minuteString = "0" + Integer.toString(minutes);
+        }
+        String dateString = c.get(c.DAY_OF_MONTH) + "-" + c.get(c.MONTH) + 1 + "-" + c.get(c.YEAR) + " " +
+                c.get(c.HOUR_OF_DAY) + "." + minuteString;
         ((TextView)row.findViewById(R.id.date)).setText(dateString);
         return row;
     }
