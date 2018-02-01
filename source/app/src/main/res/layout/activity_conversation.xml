@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:screenOrientation="portrait"
     android:windowSoftInputMode="adjustResize"
     tools:layout_editor_absoluteY="81dp"
     android:orientation="vertical">
@@ -15,7 +16,6 @@
         android:layout_height="wrap_content"
         android:divider="@null"
         android:dividerHeight="0dp"
-        android:paddingBottom="50dp"
 
         app:layout_constraintBottom_toTopOf="@+id/newMessage"
         app:layout_constraintEnd_toEndOf="parent"

@@ -91,7 +91,7 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
             minuteString = "0" + Integer.toString(minutes);
         }
         String dateString = c.get(c.DAY_OF_MONTH) + "-" + c.get(c.MONTH) + 1 + "-" + c.get(c.YEAR) + " " +
-                c.get(c.HOUR_OF_DAY) + "." + minuteString;
+                c.get(c.HOUR_OF_DAY) + ":" + minuteString;
         ((TextView)row.findViewById(R.id.date)).setText(dateString);
         return row;
     }
