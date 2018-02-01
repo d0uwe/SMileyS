@@ -51,7 +51,6 @@ public class SmsReceiver extends BroadcastReceiver {
      */
     private void processSMS(Context context, String message, String phoneNumber) {
         ChatDatabase db = ChatDatabase.getInstance(context.getApplicationContext());
-        System.out.println("user is blocked: " + db.userBlocked(phoneNumber));
         String[] contents = message.split("]", 3);
 
         // check if it's an header only sms or not
@@ -59,7 +58,6 @@ public class SmsReceiver extends BroadcastReceiver {
             checkHeader(contents, phoneNumber, context, message);
 
         } else if (contents.length == 2) {
-            System.out.println("user is in group: " + db.numberInGroup(phoneNumber, contents[0]));
             // message belongs to a group, place it in there.
             if (db.numberInGroup(phoneNumber, contents[0])) {
                 db.insertGroup(contents[0], phoneNumber, contents[1], true);

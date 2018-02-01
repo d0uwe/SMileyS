@@ -114,21 +114,24 @@ public class MainActivity extends AppCompatActivity {
         Cursor allConvs = db.selectAllConversations();
         contactArrayAdapter = new ContactArrayAdapter(getApplicationContext(), R.layout.contact_row);
 
+        // go through all conversations and list them.
         if (allConvs.moveToFirst()) {
             do {
                 String id = allConvs.getString(allConvs.getColumnIndex("id"));
                 boolean group = allConvs.getInt(allConvs.getColumnIndex("groupBool")) != 0;
-
                 String lastMessage = getLastMessage(id, db);
                 int lastDate = getLastDate(id, db);
+
                 if (group){
+                    // use the group name for the conversation
                     String groupName = db.getGroupName(id);
                     contactArrayAdapter.add(new ContactRow(lastMessage, id, lastDate, groupName, true));
                 } else {
+                    // attempt to get the contact name, otherwise use the phone number
                     Helpers helpers = new Helpers();
-                    contactArrayAdapter.add(new ContactRow(lastMessage, id, lastDate, helpers.getContactName(getApplicationContext(), id), false));
+                    contactArrayAdapter.add(new ContactRow(lastMessage, id, lastDate,
+                            helpers.getContactName(getApplicationContext(), id), false));
                 }
-
             } while (allConvs.moveToNext());
         }
         allConvs.close();
@@ -143,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private String getLastMessage(String id, ChatDatabase db) {
         Cursor allMessages = db.selectOneConversations(id);
+        // if there has been a message in this conversation, return the most recent
         if (allMessages.moveToLast()) {
             return allMessages.getString(allMessages.getColumnIndex("message"));
         } else {
@@ -174,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
             ListView convView = findViewById(R.id.contactView);
             ContactRow clickedRow = (ContactRow)convView.getItemAtPosition(i);
+
+            // save which conversation was clicked, to load the right messages in the next screen
             intent.putExtra("phoneNumber", clickedRow.number);
             intent.putExtra("groupBoolean", clickedRow.group);
             startActivity(intent);
@@ -196,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
                     Cursor c = managedQuery(contactData, null, null, null, null);
                     if (c.moveToFirst()) {
                         String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-
                         String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
                         if (hasPhone.equalsIgnoreCase("1")) {
@@ -211,7 +216,8 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra("phoneNumber", formatNumberToE164(cNumber, "NL"));
                             startActivity(intent);
                         } else {
-                            Toast toast = Toast.makeText(getApplicationContext(), "contact has no phone number", Toast.LENGTH_SHORT);
+                            Toast toast = Toast.makeText(getApplicationContext(),
+                                    "contact has no phone number", Toast.LENGTH_SHORT);
                             toast.show();
                         }
                     }

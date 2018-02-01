@@ -20,6 +20,10 @@ public class ChatDatabase extends SQLiteOpenHelper {
         super(context, name, factory, version);
     }
 
+    /**
+     * Initializes all tables.
+     * @param db database instance
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table messages (_id INTEGER PRIMARY KEY AUTOINCREMENT, ID TEXT, sender TEXT, message TEXT, inOut BOOL, date INT)");
@@ -30,6 +34,12 @@ public class ChatDatabase extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Create a fresh database instance.
+     * @param db database instance
+     * @param i version
+     * @param i1 new version
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + "messages");
