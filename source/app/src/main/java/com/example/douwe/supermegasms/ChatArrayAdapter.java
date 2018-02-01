@@ -16,9 +16,6 @@ import java.util.List;
  *
  * This adapter fills the conversation list view. It places messages right or left and sets all
  * information such as the message, date, contact who send them.
- *
- * borrowed from: https://trinitytuts.com/simple-chat-application-using-listview-in-android/
- * but has been quite extensively altered
  */
 class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
     private List<ChatMessage> chatMessageList = new ArrayList<>();
