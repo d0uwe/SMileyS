@@ -114,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
         Cursor allConvs = db.selectAllConversations();
         contactArrayAdapter = new ContactArrayAdapter(getApplicationContext(), R.layout.contact_row);
 
-        if(allConvs.moveToFirst()){
-            do{
+        if (allConvs.moveToFirst()) {
+            do {
                 String id = allConvs.getString(allConvs.getColumnIndex("id"));
                 boolean group = allConvs.getInt(allConvs.getColumnIndex("groupBool")) != 0;
 
@@ -141,9 +141,9 @@ public class MainActivity extends AppCompatActivity {
      * @param db ChatDataBase containing the messages
      * @return the last message in this conversation.
      */
-    private String getLastMessage(String id, ChatDatabase db){
+    private String getLastMessage(String id, ChatDatabase db) {
         Cursor allMessages = db.selectOneConversations(id);
-        if(allMessages.moveToLast()) {
+        if (allMessages.moveToLast()) {
             return allMessages.getString(allMessages.getColumnIndex("message"));
         } else {
             return "";
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
      * @param db ChatDataBase containing the messages
      * @return the last message in this conversation.
      */
-    private int getLastDate(String id, ChatDatabase db){
+    private int getLastDate(String id, ChatDatabase db) {
         Cursor allMessages = db.selectOneConversations(id);
         if (allMessages.moveToLast()) {
             return allMessages.getInt(allMessages.getColumnIndex("date"));

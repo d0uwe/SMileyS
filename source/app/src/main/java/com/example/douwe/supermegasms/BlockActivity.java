@@ -57,7 +57,8 @@ public class BlockActivity extends AppCompatActivity {
                 }
             } while (blockedUsers.moveToNext());
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.my_simple_list_item, R.id.text, memberNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(),
+                R.layout.my_simple_list_item, R.id.text, memberNames);
         listView.setAdapter(adapter);
     }
 

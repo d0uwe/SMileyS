@@ -18,7 +18,6 @@ import java.util.List;
  * It shows the contact / groupname, last message and time.
  */
 class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
-
     private TextView chatText;
     private List<ContactRow> contactList = new ArrayList<>();
     private Context context;
@@ -67,6 +66,7 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.contact_row, parent, false);
 
+        // set information
         chatText = row.findViewById(R.id.message);
         chatText.setText(contactRow.message);
         chatText = row.findViewById(R.id.number);
@@ -76,18 +76,24 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
             chatText.setText(contactRow.number);
         }
 
+        // set date
         chatText = row.findViewById(R.id.date);
         String dateText = getDate(contactRow);
-
         if (contactRow.date != 0){
             chatText.setText(dateText);
         } else {
             chatText.setText("");
         }
-
         return row;
     }
 
+    /**
+     * Get the date of the last message in a conversation. This is either the date or the time
+     * the date is used when the message was received over 24 hours ago, otherwise the time is
+     * shown.
+     * @param contactRow contactRow object containing the information needed.
+     * @return a string containing the right date format
+     */
     private String getDate(ContactRow contactRow) {
         String dateString;
         Calendar c = Calendar.getInstance();
@@ -96,9 +102,12 @@ class ContactArrayAdapter extends ArrayAdapter<ContactRow> {
 
         long difference = rightNow.getTimeInMillis() - c.getTimeInMillis();
         int secondDifference = (int)(difference / 1000);
+
+        // show the time if it's less than a day ago, otherwise the date
         if (secondDifference > (24 * 60 * 60)) {
             dateString = Integer.toString(c.get(c.MONTH) + 1) + Integer.toString(c.get(c.DAY_OF_MONTH));
         } else {
+            // add a zero to prevent times like 15:6
             String minuteString = Integer.toString(c.get(c.MINUTE));
             if ((c.get(c.MINUTE)) < 10) {
                 minuteString = "0" + minuteString;

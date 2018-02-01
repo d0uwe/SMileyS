@@ -49,9 +49,12 @@ public class ConversationActivity extends AppCompatActivity {
                 new IntentFilter("message received"));
     }
 
+    /**
+     * Inflate the options menu if we are in a group, else don't.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (inGroup){
+        if (inGroup) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.conversation_options, menu);
             return super.onCreateOptionsMenu(menu);
@@ -59,6 +62,12 @@ public class ConversationActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Process the selected option, either send out texts that the user wants to leave or go to
+     * the groupSettingsActivity
+     * @param item selected item
+     * @return true in case of success.
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add:
@@ -94,14 +103,13 @@ public class ConversationActivity extends AppCompatActivity {
         db.removeMeFromGroup(phoneNumber);
     }
 
-
     /**
      * Receives a broadcast when an sms is received. Forces the listview to update.
      */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (phoneNumber != null){
+            if (phoneNumber != null) {
                 setMessages(phoneNumber);
             }
         }
@@ -199,10 +207,17 @@ public class ConversationActivity extends AppCompatActivity {
         sms.sendTextMessage(phoneNumber, null, message, null, null);
         ChatDatabase db = ChatDatabase.getInstance(this.getApplicationContext());
         db.insert(formatNumberToE164(phoneNumber, "NL"), message, false);
+
         // refresh listview with the new message
         setMessages(phoneNumber);
     }
 
+    /**
+     * Send an SMS without putting it in the database, as messages in a group would end up in the
+     * database multiple times
+     * @param phoneNumber phone number to send a message to
+     * @param message the message to send
+     */
     public void sendSMSGroup(String phoneNumber, String message) {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
