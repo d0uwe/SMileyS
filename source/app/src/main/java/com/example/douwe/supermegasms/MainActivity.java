@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import static android.telephony.PhoneNumberUtils.formatNumberToE164;
 
@@ -209,8 +210,10 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
                             intent.putExtra("phoneNumber", formatNumberToE164(cNumber, "NL"));
                             startActivity(intent);
+                        } else {
+                            Toast toast = Toast.makeText(getApplicationContext(), "contact has no phone number", Toast.LENGTH_SHORT);
+                            toast.show();
                         }
-                        String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                     }
                 }
                 break;
