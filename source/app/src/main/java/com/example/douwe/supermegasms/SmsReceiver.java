@@ -95,7 +95,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     db.insertNumberInGroup(groupID, phoneNumber, parseInt(contents[0]));
                     sendBroadcast(context);
                 }
-                
+
                 break;
             case "INVOK":
                 // process reply on an invite
