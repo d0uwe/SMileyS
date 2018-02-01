@@ -66,7 +66,6 @@ public class SmsReceiver extends BroadcastReceiver {
                 sendBroadcast(context);
             }
 
-
         } else {
             // process as normal message.
             if (!db.userBlocked(phoneNumber)) {
@@ -76,6 +75,14 @@ public class SmsReceiver extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Check what kind of message the header is telling, whether it's an invite, or about adding
+     * someone.
+     * @param contents contents of the message
+     * @param phoneNumber phone number which sent the message
+     * @param context a context
+     * @param message the entire message
+     */
     private void checkHeader(String [] contents, String phoneNumber, Context context, String message) {
         ChatDatabase db = ChatDatabase.getInstance(context);
         Helpers helper = new Helpers();
