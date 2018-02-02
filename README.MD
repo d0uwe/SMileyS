@@ -28,4 +28,5 @@ For a more elaborate explanation of the functionalities, please check the report
 ![alt text](https://github.com/d0uwe/SMileyS/blob/master/docs/group_settings.png "conversation")
 
 For more screenshots, check the docs folder!
+
 A product video can be found here: https://youtu.be/Bze0V-q0lls
